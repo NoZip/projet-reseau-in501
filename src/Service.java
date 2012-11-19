@@ -1,4 +1,4 @@
-import java.util.Map;
+import org.json.JSONObject;
 
 public abstract class Service {
 	protected Pod pod;
@@ -11,5 +11,5 @@ public abstract class Service {
 		return pod;
 	}
 
-	public abstract void execute(Socket socket, Map<String, String> arguments);
+	public abstract void execute(Socket socket, JSONObject arguments);
 }
