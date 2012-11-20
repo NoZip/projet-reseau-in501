@@ -5,39 +5,30 @@ import java.util.List;
 import java.util.Vector;
 import java.net.ServerSocket;
 import java.io.*;
+<<<<<<< HEAD
+=======
+import java.nio.*;
+import java.nio.channels.*;
+>>>>>>> bf9efa0fe6b2103d6557f5a8b71517a0423967c1
 import org.json.JSONObject;
 
 public class Pod {
-	
+
 	private Map<String, Service> services;
 	private Map<String, Socket> friends;
 	private List<Message> messages;
-	private ServerSocket listeningServer ;
-	
+
 	public Pod(Map<String, Service> services){
-		this.services = services ;
-		this.friends = new Hashtable<String,Socket>();
+		this.services = new Hashtable<String, Service>();
+		this.friends = new Hashtable<String, Socket>();
 		this.messages = new Vector<Message>();
-	}	
-	
-	public void listeningServer(){
-		try {
-			ServerSocket ServSock = new ServerSocket(7777); //creation du  serveur
-			while(true){
-				Socket sockCo = ServSock.accept(); //on accepte la connexion
-				//NomThread monthread = new NomThread(sockCo);//lancer le thread //on lance le thread chargé de l'écoute
-				//monThread.run();
-			}
-		}catch(Exception e){
-			;
-		}
-		
 	}
-	
+
 	/**
 	 * Lance la boucle d'écoute du Pod.
 	 * @param client
 	 */
+<<<<<<< HEAD
 	public void listen(Socket client) {
 		try{
 			InputStream is = client.getInputStream(); //initialisation du stream
@@ -85,15 +76,30 @@ public class Pod {
 		}
 	}
 	
+=======
+	public void listen(int port) {
+		ServerSocket serverSocket = new ServerSocket(port); //creation du  serveur
+
+		// Boucle d'écoute
+		while(true){
+			Socket socket = serverSocket.accept();
+
+			// On redirige le socket qui s'est connecté vers un thread
+			ConnectionThread handler = new ConnectionThread(this, socket);
+			handler.run();
+		}
+	}
+
+>>>>>>> bf9efa0fe6b2103d6557f5a8b71517a0423967c1
 	/**
 	 * Route la commande vers le service adéquat.
 	 * @param command
 	 * @param arguments
 	 */
-	public void runCommand(String command, JSONObject arguments) {//je sais pas comment faire
-		
+	public void runCommand(String command, Socket socket, JSONObject arguments) {
+		services.get(command).execute(socket, arguments);
 	}
-	
+
 	/**
 	 * Envoie une commande à un autre Pod
 	 * @param url
@@ -101,37 +107,62 @@ public class Pod {
 	 * @param arguments
 	 */
 	public void sendCommand(String url, String command, Map<String, String> arguments) {
-		
+
 	}
-	
+
+	/**
+	 * Récupère un service grace à sa commande.
+	 * @param command
+	 */
+	public getService(String command) {
+		return services.get(command);
+	}
+
+	/**
+	 * Ajoute un service au pod.
+	 * @param command
+	 * @param service
+	 */
+	public synchronized addService(String command, Service service) {
+
+	}
+
+	/**
+	 * Retire un service du pod.
+	 * @param command
+	 */
+	public synchronized removeService(String command) {
+
+	}
+
 	/**
 	 * Ajoute un ami.
 	 * @param url
 	 */
-	public void addFriend(String url) {
-		
+	public synchronized void addFriend(String url) {
+
 	}
-	
+
 	/**
 	 * Supprime un ami
 	 * @param url
 	 */
-	public void removeFriend(String url) {
-		
+	public synchronized void removeFriend(String url) {
+
 	}
-	
+
+	/**
+	 * Récupère les messages du pod.
+	 */
+	public synchronized void getMessages() {
+
+	}
+
 	/**
 	 * Ajoute un message au pod.
 	 * @param message
 	 */
-	public void addMessage(Message message) {
-		
-	}
-	
-	/**
-	 * Récupère les messages du pod.
-	 */
-	public void getMessages() {
-		
+	public synchronized void addMessage(Message message) {
+
 	}
 }

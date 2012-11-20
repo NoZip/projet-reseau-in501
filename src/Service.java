@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 import java.util.Map;
 import java.net.Socket;
+=======
+import org.json.JSONObject;
+>>>>>>> bf9efa0fe6b2103d6557f5a8b71517a0423967c1
 
 public abstract class Service {
 	protected Pod pod;
@@ -12,5 +16,5 @@ public abstract class Service {
 		return pod;
 	}
 
-	public abstract void execute(Socket socket, Map<String, String> arguments);
+	public abstract void execute(Socket socket, JSONObject arguments);
 }
