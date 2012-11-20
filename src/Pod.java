@@ -4,10 +4,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 import java.net.ServerSocket;
-import java.net.*;
 import java.io.*;
-import java.nio.*;
-import java.nio.channels.*; 
 import org.json.JSONObject;
 
 public class Pod {
@@ -62,9 +59,9 @@ public class Pod {
 		    	
 		    	buf.append(tmpBuf);
 		    	
-		    	if(cpt == 0 & !debut) { //si message finit
+		    	if(cpt == 0 & !debut) { //si message fini
 		    		parseQuery(buf.toString(),client); //on traite la commande
-		    		debut = true ; //pn reinitialise
+		    		debut = true ; //on reinitialise
 		    		buf = new StringBuffer() ;
 		    	}
 		    	
@@ -81,7 +78,11 @@ public class Pod {
 	 */
 	public void parseQuery(String inputData,Socket client) {
 		String[] tmp = inputData.split(" ");//le separateur peut-etre amene a change
-		runCommand(tmp[0],new JSONObject(tmp[1])); //on recupere la commande et les arguments associés (dans un JSONObject)
+		try { //new JSONObject peut lancer une exception
+			runCommand(tmp[0],new JSONObject(tmp[1])); //on recupere la commande et les arguments associés (dans un JSONObject)
+		}catch(Exception e){
+			; //tant pis
+		}
 	}
 	
 	/**

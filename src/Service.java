@@ -1,4 +1,5 @@
 import java.util.Map;
+import java.net.Socket;
 
 public abstract class Service {
 	protected Pod pod;
@@ -7,7 +8,7 @@ public abstract class Service {
 		this.pod = pod;
 	}
 
-	public getPod() {
+	public Pod getPod() {
 		return pod;
 	}
 
