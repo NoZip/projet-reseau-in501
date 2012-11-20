@@ -15,73 +15,28 @@ public class Pod {
 	private Map<String, Service> services;
 	private Map<String, Socket> friends;
 	private List<Message> messages;
-	private ServerSocket listeningServer ;
 
 	public Pod(Map<String, Service> services){
-		this.services = services ;
-		this.friends = new Hashtable<String,Socket>();
+		this.services = new Hashtable<String, Service>();
+		this.friends = new Hashtable<String, Socket>();
 		this.messages = new Vector<Message>();
-	}
-
-	public void listeningServer(){
-		try {
-			ServerSocket ServSock = new ServerSocket(7777); //creation du  serveur
-			while(true){
-				Socket socket = ServSock.accept(); //on accepte la connexion
-				ConnectionThread handler = new ConnectionThread(this, socket);
-				handler.run();
-			}
-		}catch(Exception e){
-			;
-		}
-
 	}
 
 	/**
 	 * Lance la boucle d'écoute du Pod.
 	 * @param client
 	 */
-	public void listen(Socket client) {
-		try{
-			InputStream is = client.getInputStream(); //initialisation du stream
-		    BufferedReader br = new BufferedReader(new InputStreamReader(is, "utf-8")); //initialisation du reader
+	public void listen(int port) {
+		ServerSocket serverSocket = new ServerSocket(port); //creation du  serveur
 
-		    StringBuffer buf = new StringBuffer() ; //chaine qui va contenir les données reçues
-		    char tmpBuf[] = new char[1]; //pour lire charactere par charactere
-		    int cpt = 0 ; //compte le nombre de { pour savoir quand se termine la commande
-		    boolean debut = true ; // permet de savoir si on est au debut du message ou si on a commence a lire les arguments
+		// Boucle d'écoute
+		while(true){
+			Socket socket = serverSocket.accept();
 
-		    while(true){
-
-		    	br.read(tmpBuf,0,1); // on lit charactere par charactere
-
-		    	if( tmpBuf[0] == ('{') )
-		    		cpt++;
-		    	else if( tmpBuf[0] == ('}') )
-		    		cpt--;
-
-		    	buf.append(tmpBuf);
-
-		    	if(cpt == 0 & !debut) { //si message finit
-		    		parseQuery(buf.toString(),client); //on traite la commande
-		    		debut = true ; //pn reinitialise
-		    		buf = new StringBuffer() ;
-		    	}
-
-		    }
-		}catch(Exception e){
-			;
+			// On redirige le socket qui s'est connecté vers un thread
+			ConnectionThread handler = new ConnectionThread(this, socket);
+			handler.run();
 		}
-	}
-
-	/**
-	 * Traite les données récupérés sur le socket et sépare la commande des arguments.
-	 * ex: MSG {'mimetype': 'text/plain', 'content': 'Hello Knacki'}
-	 * @param inputData
-	 */
-	public void parseQuery(String inputData,Socket client) {
-		String[] tmp = inputData.split(" ", 2);//le separateur peut-etre amene a change
-		runCommand(tmp[0],new JSONObject(tmp[1])); //on recupere la commande et les arguments associés (dans un JSONObject)
 	}
 
 	/**
@@ -90,8 +45,7 @@ public class Pod {
 	 * @param arguments
 	 */
 	public void runCommand(String command, Socket socket, JSONObject arguments) {
-		CommandThread command = new CommandThread(sevices.get(command), socket, arguments);
-		command.run();
+		services.get(command).execute(socket, arguments);
 	}
 
 	/**
