@@ -18,6 +18,7 @@ class ConnectionThread extends Thread {
 		// - lectures des données dans le socket.
 		// - séparation de la commande et des arguments.
 		// - envoi des arguments de la commande au service approprié.
+		// - envoi de la réponse au pod qui a effectué la requête.
 
 		// Phase 1:
 
@@ -26,16 +27,18 @@ class ConnectionThread extends Thread {
 
 		// Phase 3:
 		// On lance la commande avec les arguments
-		pod.runCommand(tmp[0], new JSONObject(tmp[1]));
+		String response = runCommand(tmp[0], new JSONObject(tmp[1]));
+
+		//Phase 4:
 	}
-	
+
 	/**
 	 * Route la commande vers le service adéquat.
 	 * @param command
 	 * @param arguments
 	 */
-	public void runCommand(String command, Socket socket, JSONObject arguments) {
-		services.get(command).execute(socket, arguments);
+	public String runCommand(String command, JSONObject arguments) {
+		return pod.getService(command).execute(client, arguments);
 	}
-	
+
 }
