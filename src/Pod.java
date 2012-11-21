@@ -13,12 +13,12 @@
 	public class Pod {
 
 		private Map<String, Service> services;
-		private Map<String, String[]> friends;
+		private Map<String, String> friends;
 		private List<Message> messages;
 
 		public Pod(Map<String, Service> services,String username){
 			this.services = new Hashtable<String, Service>();
-			this.friends = new Hashtable<String, String[]>();
+			this.friends = new Hashtable<String, String>();
 			this.messages = new Vector<Message>();
 		}
 
@@ -62,7 +62,7 @@
 
 		/**
 		* Récupère un service grace à sa commande.
-		* @param command
+		* @param command la commande liée au service.
 		* @return le service demandé.
 		*/
 		public Service getService(String command) {
@@ -71,8 +71,8 @@
 
 		/**
 		* Ajoute un service au pod.
-		* @param command
-		* @param service
+		* @param command La commande à laquelle le service sera associé.
+		* @param service Le service à rajouter.
 		*/
 		public void addService(String command, Service service) {
 			synchronized(services) {
@@ -82,7 +82,7 @@
 
 		/**
 		* Retire un service du pod.
-		* @param command
+		* @param command La commande à supprimer.
 		*/
 		public void removeService(String command) {
 			synchronized(services) {
@@ -93,6 +93,7 @@
 		/**
 		 * Récupère l'url d'un ami.
 		 * @param name le nom de l'ami.
+		 * @return L'url correspondant à l'ami (de la forme 192.168.1.42:5555).
 		 */
 		public String getFriendUrl(String name) {
 			return friends.get(name);
@@ -110,8 +111,8 @@
 		}
 
 		/**
-		* Supprime un ami
-		* @param name
+		* Supprime un ami.
+		* @param name Le nom de l'ami a supprimer.
 		*/
 		public void removeFriend(String name) {
 			synchronized(services) {
@@ -121,6 +122,7 @@
 
 		/**
 		* Récupère les messages du pod.
+		* @return Une liste de messages.
 		*/
 		public synchronized List<Message> getMessages() {
 			return messages.clone();
