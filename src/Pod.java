@@ -1,4 +1,5 @@
 import java.net.Socket;
+import java.net.InetAddress;
 import java.util.Map;
 import java.util.Hashtable;
 import java.util.List;
@@ -12,25 +13,29 @@ import org.json.JSONObject;
 public class Pod {
 
 	private Map<String, Service> services;
-	private Map<String, Socket> friends;
+	private Map<String, String> friends;
 	private List<Message> messages;
 
 	public Pod(Map<String, Service> services){
 		this.services = new Hashtable<String, Service>();
-		this.friends = new Hashtable<String, Socket>();
+		this.friends = new Hashtable<String, String>();
 		this.messages = new Vector<Message>();
 	}
 	
 	public void listen(int port) {
-		ServerSocket serverSocket = new ServerSocket(port); //creation du  serveur
+		try {
+			ServerSocket serverSocket = new ServerSocket(port); //creation du  serveur
 
 		// Boucle d'écoute
-		while(true){
-			Socket socket = serverSocket.accept();
-
-			// On redirige le socket qui s'est connecté vers un thread
-			ConnectionThread handler = new ConnectionThread(this, socket);
-			handler.run();
+			while(true){
+				Socket socket = serverSocket.accept();
+	
+				// On redirige le socket qui s'est connecté vers un thread
+				ConnectionThread handler = new ConnectionThread(this, socket);
+				handler.run();
+			}
+		}catch(Exception e){
+			;//tant pis
 		}
 	}
 
@@ -40,8 +45,18 @@ public class Pod {
 	 * @param command
 	 * @param arguments
 	 */
-	public void sendCommand(String url, String command, Map<String, String> arguments) {
-
+	public void sendCommand(String url, int port, String command, JSONObject arguments) {
+		try {
+			InetAddress addr = java.net.InetAddress.getByName(url);//on recupere l'adresse correspondant a l'url
+			Socket sock = new Socket(addr,port); //on cree la socket d'ecriture
+			OutputStream os = sock.getOutputStream(); //on cree le stream
+			StringBuffer tmpBuf = new StringBuffer(command) ; //on cree la chaine a envoyer
+			tmpBuf.append(arguments.toString());
+			String tmp = new String(tmpBuf);
+			os.write(tmp.getBytes()); //on l'envoie sous forme de bytes
+		}catch(Exception e){
+			;//tant pis
+		}
 	}
 
 	/**
@@ -57,16 +72,16 @@ public class Pod {
 	 * @param command
 	 * @param service
 	 */
-	public synchronized addService(String command, Service service) {
-
+	public synchronized void addService(String command, Service service) {
+		services.put(command,service);
 	}
 
 	/**
 	 * Retire un service du pod.
 	 * @param command
 	 */
-	public synchronized removeService(String command) {
-
+	public synchronized void removeService(String command) {
+		services.remove(command);
 	}
 
 	/**
@@ -74,7 +89,7 @@ public class Pod {
 	 * @param url
 	 */
 	public synchronized void addFriend(String url) {
-
+		//traitement pour recuperer le nom.
 	}
 
 	/**
