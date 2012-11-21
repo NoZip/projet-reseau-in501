@@ -17,10 +17,17 @@ public class Message {
 		return date;
 	}
 
-	public toJSON() {
+	/**
+	 * Tranforme le message en objet JSON.
+	 * @return L'objet JSON correspondant au message.
+	 * @todo Bien formater la date au format ISO "YYYY-MM-DDThh-mm-ss±hh-mm"
+	 */
+	public JSONObject toJSON() {
 		JSONObject json = new JSONObject();
 
 		json.put("content", content);
-		json.put("date", date.toString()); // TODO: bien formater la date au format ISO "YYYY-MM-DDThh-mm-ss±hh-mm"
+		json.put("date", date.toString());
+
+		return json;
 	}
 }
