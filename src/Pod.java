@@ -54,49 +54,69 @@ public class Pod {
 
 	/**
 	 * Ajoute un service au pod.
-	 * @param command
-	 * @param service
+	 * @param command La commande associée au service.
+	 * @param service Le service.
 	 */
-	public synchronized addService(String command, Service service) {
-
+	public addService(String command, Service service) {
+		synchronized(services) {
+			services.put(command, service);
+		}
 	}
 
 	/**
 	 * Retire un service du pod.
 	 * @param command
 	 */
-	public synchronized removeService(String command) {
+	public removeService(String command) {
+		synchronized(services) {
+			services.remove(command);
+		}
+	}
 
+	// TODO: Trouver un moyen de gérer les amis.
+
+	/**
+	 * Récupère un ami grâce à son nom.
+	 * @param name Le nom de l'ami.
+	 */
+	public Socket getFriend(String name) {
+		return friends.get(name);
 	}
 
 	/**
 	 * Ajoute un ami.
-	 * @param url
+	 * @param name
+	 * @param socket
 	 */
-	public synchronized void addFriend(String url) {
-
+	public void addFriend(String name, Socket socket) {
+		synchronized(friends) {
+			friends.put(name, socket);
 	}
 
 	/**
 	 * Supprime un ami
-	 * @param url
+	 * @param name
 	 */
-	public synchronized void removeFriend(String url) {
-
+	public void removeFriend(String name) {
+		synchronized(friends) {
+			friends.remove(name);
+		}
 	}
 
 	/**
 	 * Récupère les messages du pod.
 	 */
-	public synchronized void getMessages() {
-
+	public List<Messages> getMessages() {
+		return messages.clone();
 	}
 
 	/**
 	 * Ajoute un message au pod.
 	 * @param message
 	 */
-	public synchronized void addMessage(Message message) {
-
+	public void addMessage(Message message) {
+		synchronized(messages) {
+			messages.add(message);
+		}
 	}
 }
