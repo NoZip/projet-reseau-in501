@@ -13,12 +13,12 @@ import org.json.JSONObject;
 public class Pod {
 
 	private Map<String, Service> services;
-	private Map<String, String> friends;
+	private Map<String, String[]> friends;
 	private List<Message> messages;
 
-	public Pod(Map<String, Service> services){
+	public Pod(Map<String, Service> services,String username){
 		this.services = new Hashtable<String, Service>();
-		this.friends = new Hashtable<String, String>();
+		this.friends = new Hashtable<String, String[]>();
 		this.messages = new Vector<Message>();
 	}
 	
@@ -50,10 +50,10 @@ public class Pod {
 			InetAddress addr = java.net.InetAddress.getByName(url);//on recupere l'adresse correspondant a l'url
 			Socket sock = new Socket(addr,port); //on cree la socket d'ecriture
 			OutputStream os = sock.getOutputStream(); //on cree le stream
-			StringBuffer tmpBuf = new StringBuffer(command) ; //on cree la chaine a envoyer
-			tmpBuf.append(arguments.toString());
+			StringBuffer tmpBuf = new StringBuffer(command + " " + arguments.toString()) ; //on cree la chaine a envoyer
 			String tmp = new String(tmpBuf);
 			os.write(tmp.getBytes()); //on l'envoie sous forme de bytes
+			sock.close();
 		}catch(Exception e){
 			;//tant pis
 		}
@@ -88,23 +88,23 @@ public class Pod {
 	 * Ajoute un ami.
 	 * @param url
 	 */
-	public synchronized void addFriend(String url) {
-		//traitement pour recuperer le nom.
+	public synchronized void addFriend(String url,int port) {
+		;
 	}
 
 	/**
 	 * Supprime un ami
 	 * @param url
 	 */
-	public synchronized void removeFriend(String url) {
-
+	public synchronized void removeFriend(String name) {
+		friends.remove(name);
 	}
 
 	/**
 	 * Récupère les messages du pod.
 	 */
 	public synchronized void getMessages() {
-
+		;
 	}
 
 	/**
@@ -112,6 +112,6 @@ public class Pod {
 	 * @param message
 	 */
 	public synchronized void addMessage(Message message) {
-
+		;
 	}
 }
