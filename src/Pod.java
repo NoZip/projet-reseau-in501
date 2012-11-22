@@ -40,13 +40,43 @@
 		}
 
 		/**
+		 * Traite la requête.
+		 * @param client Le socket du pod qui a envoyé la commande.
+		 */
+		public void handleRequest(Socket client) {
+			// Le traitement se déroule en trois phases:
+			// 1: lectures des données dans le socket.
+			// 2: séparation de la commande et des arguments.
+			// 3: envoi des arguments de la commande au service approprié.
+
+			// Phase 1:
+
+			// Phase 2:
+			String[] tmp = inputData.split(" ", 2);
+
+			// Phase 3:
+			// On lance la commande avec les arguments
+			String response = runCommand(tmp[0], new JSONObject(tmp[1]));
+		}
+
+		/**
+		 * Route la commande vers le service adéquat.
+		 * @param command La commande à lancer.
+		 * @param client Le socket corresondant au pod qui a envoyé la commande.
+		 * @param arguments Les arguments de la commande.
+		 */
+		public void runCommand(String command, Socket client, JSONObject arguments) {
+			services.get(command).execute(client, arguments);
+		}
+
+		/**
 		* Envoie une commande à un autre Pod
-		* @param url
-		* @param command
-		* @param arguments
-		* @return La réponse de l'autre Pod.
+		* @param url L'adresse du pod auquel envoyer la commande.
+		* @param command La commande à envoyer.
+		* @param arguments Les arguments de la commande.
+		* @todo Récrire la fonction.
 		*/
-		public JSONObject sendCommand(String url, int port, String command, JSONObject arguments) {
+		public void sendCommand(String url, String command, JSONObject arguments) {
 			try {
 				InetAddress addr = java.net.InetAddress.getByName(url);//on recupere l'adresse correspondant a l'url
 				Socket sock = new Socket(addr,port); //on cree la socket d'ecriture
@@ -124,7 +154,7 @@
 		* Récupère les messages du pod.
 		* @return Une liste de messages.
 		*/
-		public synchronized List<Message> getMessages() {
+		public List<Message> getMessages() {
 			return messages.clone();
 		}
 

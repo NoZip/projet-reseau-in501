@@ -14,7 +14,7 @@ public class ListMessagesService extends Service {
 	 * @todo Prendre en compte l'option "since"
 	 */
 	@Override
-	public String execute(Socket socket, JSONObject arguments) {
+	public void execute(Socket socket, JSONObject arguments) {
 		List<Messages> messsages = pod.getMessages();
 
 		JSONArray response = new JSONArray();
@@ -25,7 +25,7 @@ public class ListMessagesService extends Service {
 			response.put(i.next().toJSON());
 		}
 
-		return response.toString();
+		// à finir
 	}
 
 }

@@ -14,5 +14,5 @@ public abstract class Service {
 		return pod;
 	}
 
-	public abstract String execute(Socket socket, JSONObject arguments);
+	public abstract void execute(Socket socket, JSONObject arguments);
 }
