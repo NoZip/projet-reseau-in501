@@ -1,5 +1,9 @@
-import java.utils.List
-import org.json.JSONOArray;
+import java.util.List;
+import java.net.InetAddress;
+import java.util.Iterator;
+import org.json.JSONArray;
+import org.json.JSONObject ;
+import java.net.Socket;
 
 public class ListMessagesService extends Service {
 
@@ -14,8 +18,8 @@ public class ListMessagesService extends Service {
 	 * @todo Prendre en compte l'option "since"
 	 */
 	@Override
-	public void execute(Socket socket, JSONObject arguments) {
-		List<Messages> messsages = pod.getMessages();
+	public String execute(InetAddress addr, int port,JSONObject arguments) {
+		List<Message> messages = pod.getMessages();
 
 		JSONArray response = new JSONArray();
 
@@ -26,6 +30,10 @@ public class ListMessagesService extends Service {
 		}
 
 		// à finir
+		
+		//Pod.sendCommand(addr,port,"NomDeLaCommande",Liste des messages);
+		
+		return "REUSSIE";
 	}
 
 }

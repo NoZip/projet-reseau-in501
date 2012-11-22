@@ -1,6 +1,5 @@
-import java.util.Map;
-import java.net.Socket;
 import org.json.JSONObject;
+import java.net.InetAddress ;
 
 
 public abstract class Service {
@@ -14,5 +13,5 @@ public abstract class Service {
 		return pod;
 	}
 
-	public abstract void execute(Socket socket, JSONObject arguments);
+	public abstract String execute(InetAddress addr, int port, JSONObject arguments);
 }

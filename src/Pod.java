@@ -6,8 +6,6 @@
 	import java.util.Vector;
 	import java.net.ServerSocket;
 	import java.io.*;
-	import java.nio.*;
-	import java.nio.channels.*;
 	import org.json.JSONObject;
 
 	public class Pod {
@@ -48,15 +46,27 @@
 			// 1: lectures des données dans le socket.
 			// 2: séparation de la commande et des arguments.
 			// 3: envoi des arguments de la commande au service approprié.
-
-			// Phase 1:
-
-			// Phase 2:
-			String[] tmp = inputData.split(" ", 2);
-
-			// Phase 3:
-			// On lance la commande avec les arguments
-			String response = runCommand(tmp[0], new JSONObject(tmp[1]));
+			try {
+				InetAddress addr = client.getInetAddress();
+				int port = client.getPort();
+				// Phase 1:
+				StringBuffer buf = new StringBuffer();
+				InputStream is = client.getInputStream();
+				byte[] readData = new byte[128];
+				while(is.read(readData)>0){
+					buf.append(readData.toString()) ;
+				}
+				String inputData = new String(buf) ;
+				// Phase 2:
+				String[] tmp = inputData.split(" ", 2);
+	
+				// Phase 3:
+				// On lance la commande avec les arguments
+				String response = runCommand(tmp[0], addr, port,new JSONObject(tmp[1]));
+				//verifie response et agir en consequence
+			}catch(Exception e){
+				;
+			}
 		}
 
 		/**
@@ -65,8 +75,8 @@
 		 * @param client Le socket corresondant au pod qui a envoyé la commande.
 		 * @param arguments Les arguments de la commande.
 		 */
-		public void runCommand(String command, Socket client, JSONObject arguments) {
-			services.get(command).execute(client, arguments);
+		public String runCommand(String command, InetAddress addr, int port, JSONObject arguments) {
+			return services.get(command).execute(addr, port, arguments);
 		}
 
 		/**
@@ -76,14 +86,14 @@
 		* @param arguments Les arguments de la commande.
 		* @todo Récrire la fonction.
 		*/
-		public void sendCommand(String url, String command, JSONObject arguments) {
+		public void sendCommand(InetAddress addr, int port, String command, JSONObject arguments) {
 			try {
-				InetAddress addr = java.net.InetAddress.getByName(url);//on recupere l'adresse correspondant a l'url
 				Socket sock = new Socket(addr,port); //on cree la socket d'ecriture
 				OutputStream os = sock.getOutputStream(); //on cree le stream
 				StringBuffer tmpBuf = new StringBuffer(command + " " + arguments.toString()) ; //on cree la chaine a envoyer
 				String tmp = new String(tmpBuf);
 				os.write(tmp.getBytes()); //on l'envoie sous forme de bytes
+				os.close();
 				sock.close();
 			} catch(Exception e){
 				;//tant pis
@@ -155,7 +165,7 @@
 		* @return Une liste de messages.
 		*/
 		public List<Message> getMessages() {
-			return messages.clone();
+			return new Vector<Message>(messages);
 		}
 
 		/**

@@ -1,4 +1,5 @@
 import java.util.Date;
+import org.json.JSONObject ;
 
 public class Message {
 	protected String content;
