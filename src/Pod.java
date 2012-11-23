@@ -10,14 +10,18 @@
 
 	public class Pod {
 
-		private Map<String, Service> services;
-		private Map<String, String> friends;
-		private List<Message> messages;
+		protected Map<String, Service> services;
+		protected List<User> friends;
+		protected List<Message> messages;
 
-		public Pod(Map<String, Service> services,String username){
+		protected UserProfile owner;
+
+		public Pod(String username){
 			this.services = new Hashtable<String, Service>();
-			this.friends = new Hashtable<String, String>();
+			this.friends = new Vector<User>();
 			this.messages = new Vector<Message>();
+
+			this.owner = new UserProfile(username);
 		}
 
 		public void listen(int port) {
@@ -59,7 +63,7 @@
 				String inputData = new String(buf) ;
 				// Phase 2:
 				String[] tmp = inputData.split(" ", 2);
-	
+
 				// Phase 3:
 				// On lance la commande avec les arguments
 				runCommand(tmp[0], addr, port,new JSONObject(tmp[1]));
@@ -131,32 +135,29 @@
 		}
 
 		/**
-		 * Récupère l'url d'un ami.
-		 * @param name le nom de l'ami.
-		 * @return L'url correspondant à l'ami (de la forme 192.168.1.42:5555).
+		 * permet de récupérer le liste d'amis du pod.
 		 */
-		public String getFriendUrl(String name) {
-			return friends.get(name);
+		public List<User> getFriendList() {
+			return friends.clone();
 		}
 
 		/**
 		* Ajoute un ami.
-		* @param name Le nom de l'ami.
-		* @param url Une url du type "192.168.1.42:5555
+		* @param friend L'objet utilisateur représentant l'ami.
 		*/
-		public void addFriend(String name, String url) {
+		public void addFriend(User friend) {
 			synchronized(friends) {
-				friends.put(name, url);
+				friends.put(name, friend);
 			}
 		}
 
 		/**
 		* Supprime un ami.
-		* @param name Le nom de l'ami a supprimer.
+		* @param index La position de l'ami à supprimer dans la liste.
 		*/
-		public void removeFriend(String name) {
+		public void removeFriend(int index) {
 			synchronized(services) {
-				friends.remove(name);
+				friends.remove(index);
 			}
 		}
 
@@ -165,7 +166,7 @@
 		* @return Une liste de messages.
 		*/
 		public List<Message> getMessages() {
-			return new Vector<Message>(messages);
+			return messages.clone();
 		}
 
 		/**
@@ -176,5 +177,12 @@
 			synchronized(messages) {
 				messages.add(message);
 			}
+		}
+
+		/**
+		 * permet de récupérer le profil de l'utilisateur du pod.
+		 */
+		public UserProfile getOwner() {
+			return owner;
 		}
 	}
