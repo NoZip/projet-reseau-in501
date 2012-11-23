@@ -32,8 +32,6 @@ public class ListMessagesService extends Service {
 		// à finir
 		
 		//Pod.sendCommand(addr,port,"NomDeLaCommande",Liste des messages);
-		
-		return "REUSSIE";
 	}
 
 }
