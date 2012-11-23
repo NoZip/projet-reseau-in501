@@ -17,4 +17,9 @@ class PodLocation {
 	public int getPort() {
 		return port;
 	}
+
+	public boolean equals(PodLocation other) {
+		return this.address.equals(other.address)
+			   && this.port == other.port;
+	}
 }

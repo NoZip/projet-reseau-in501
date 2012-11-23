@@ -12,6 +12,10 @@ class UserProfile {
 		return name;
 	}
 
+	public boolean equals(UserProfile other) {
+		return this.name == other.name;
+	}
+
 	/**
 	 * Transforme un object JSON en UserProfile.
 	 * @param source L'objet JSON à sérialiser.
