@@ -62,7 +62,7 @@
 	
 				// Phase 3:
 				// On lance la commande avec les arguments
-				String response = runCommand(tmp[0], addr, port,new JSONObject(tmp[1]));
+				runCommand(tmp[0], addr, port,new JSONObject(tmp[1]));
 				//verifie response et agir en consequence
 			}catch(Exception e){
 				;
@@ -75,8 +75,8 @@
 		 * @param client Le socket corresondant au pod qui a envoyé la commande.
 		 * @param arguments Les arguments de la commande.
 		 */
-		public String runCommand(String command, InetAddress addr, int port, JSONObject arguments) {
-			return services.get(command).execute(addr, port, arguments);
+		public void runCommand(String command, InetAddress addr, int port, JSONObject arguments) {
+			services.get(command).execute(addr, port, arguments);
 		}
 
 		/**

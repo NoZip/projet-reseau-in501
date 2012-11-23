@@ -18,7 +18,7 @@ public class ListMessagesService extends Service {
 	 * @todo Prendre en compte l'option "since"
 	 */
 	@Override
-	public String execute(InetAddress addr, int port,JSONObject arguments) {
+	public void execute(InetAddress addr, int port,JSONObject arguments) {
 		List<Message> messages = pod.getMessages();
 
 		JSONArray response = new JSONArray();

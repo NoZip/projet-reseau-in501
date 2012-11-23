@@ -10,11 +10,11 @@ public class Message {
 		this.date = date;
 	}
 
-	public getContent() {
+	public String getContent() {
 		return content;
 	}
 
-	public getDate() {
+	public Date getDate() {
 		return date;
 	}
 

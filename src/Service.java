@@ -13,5 +13,5 @@ public abstract class Service {
 		return pod;
 	}
 
-	public abstract String execute(InetAddress addr, int port, JSONObject arguments);
+	public abstract void execute(InetAddress addr, int port, JSONObject arguments);
 }
