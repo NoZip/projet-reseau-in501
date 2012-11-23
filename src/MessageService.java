@@ -1,5 +1,8 @@
 
 import java.net.InetAddress;
+import java.text.ParseException;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 
@@ -17,6 +20,11 @@ public class MessageService extends Service {
 	 */
 	@Override
 	public void execute(InetAddress addr, int port, JSONObject arguments) {
-		pod.addMessage(Message.fromJSON(arguments));
+		try {
+			pod.addMessage(Message.fromJSON(arguments));
+		} catch (JSONException | ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

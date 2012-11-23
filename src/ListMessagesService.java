@@ -1,6 +1,8 @@
 import java.util.List;
 import java.net.InetAddress;
 import java.util.Iterator;
+
+import org.json.JSONException;
 import org.json.JSONObject ;
 
 public class ListMessagesService extends Service {
@@ -24,7 +26,12 @@ public class ListMessagesService extends Service {
 		Iterator<Message> i = messages.iterator();
 
 		while(i.hasNext()) {
-			pod.sendCommand(addr,port,NOM_COMMANDE,i.next().toJSON());
+			try {
+				pod.sendCommand(addr,port,NOM_COMMANDE,i.next().toJSON());
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}	
 	}
 

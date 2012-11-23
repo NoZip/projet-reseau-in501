@@ -1,5 +1,4 @@
 import java.net.Socket;
-import org.json.JSONObject ;
 
 class ConnectionThread extends Thread {
 	private Pod pod;
