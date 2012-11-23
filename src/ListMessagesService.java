@@ -1,11 +1,11 @@
 import java.util.List;
 import java.net.InetAddress;
 import java.util.Iterator;
-import org.json.JSONArray;
 import org.json.JSONObject ;
-import java.net.Socket;
 
 public class ListMessagesService extends Service {
+	
+	private static final String NOM_COMMANDE = "MSG";
 
 	public ListMessagesService(Pod pod) {
 		super(pod);
@@ -21,17 +21,14 @@ public class ListMessagesService extends Service {
 	public void execute(InetAddress addr, int port,JSONObject arguments) {
 		List<Message> messages = pod.getMessages();
 
-		JSONArray response = new JSONArray();
-
 		Iterator<Message> i = messages.iterator();
 
 		while(i.hasNext()) {
-			response.put(i.next().toJSON());
+			pod.sendCommand(addr,port,NOM_COMMANDE,i.next().toJSON());
 		}
 
 		// à finir
-		
-		//Pod.sendCommand(addr,port,"NomDeLaCommande",Liste des messages);
+			
 	}
 
 }
