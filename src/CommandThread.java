@@ -6,7 +6,7 @@ import org.json.JSONObject;
 class CommandThread extends Thread {
 	private Service service;
 	private Socket socket;
-	private Map<String, String> arguments;
+	private JSONObject arguments;
 
 	public CommandThread(Service service, Socket socket, JSONObject arguments) {
 		this.service = service;

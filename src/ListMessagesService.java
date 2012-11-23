@@ -25,10 +25,7 @@ public class ListMessagesService extends Service {
 
 		while(i.hasNext()) {
 			pod.sendCommand(addr,port,NOM_COMMANDE,i.next().toJSON());
-		}
-
-		// à finir
-			
+		}	
 	}
 
 }
