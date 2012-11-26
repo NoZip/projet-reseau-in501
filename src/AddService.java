@@ -1,25 +1,25 @@
-import java.net.InetAddress;
+import java.net.InetAddress ;
 
 import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.JSONObject ;
 
+public class AddService extends Service {
 
-public class UserService extends Service {
-
-	public UserService(Pod pod){
+	public AddService(Pod pod){
 		super(pod);
 	}
 	
-	public void execute(InetAddress addr, int port, JSONObject arguments){
+	public void execute(InetAddress addr, int port, JSONObject arguments) {
 		UserProfile friendInfo;
-		User friend;
+		User friend ;
 		try {
 			friendInfo = UserProfile.fromJSON(arguments);
 			friend = new User(friendInfo,new PodLocation(addr,port),false);
-			pod.acceptFriend(friend);
+			pod.addFriend(friend);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+	
 }

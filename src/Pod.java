@@ -1,12 +1,13 @@
-	import java.net.Socket;
-	import java.net.InetAddress;
-	import java.util.Map;
-	import java.util.Hashtable;
-	import java.util.List;
-	import java.util.Vector;
-	import java.net.ServerSocket;
-	import java.io.*;
-	import org.json.JSONObject;
+import java.net.Socket;
+import java.net.InetAddress;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Vector;
+import java.net.ServerSocket;
+import java.io.*;
+import org.json.JSONObject;
 
 	public class Pod {
 
@@ -138,7 +139,11 @@
 		 * permet de récupérer le liste d'amis du pod.
 		 */
 		public List<User> getFriendList() {
-			return friends.clone();
+			List<User> res = new Vector<User>();
+			Iterator<User> it = friends.iterator();
+			while(it.hasNext())
+				res.add(it.next());
+			return res;
 		}
 
 		/**
@@ -147,7 +152,18 @@
 		*/
 		public void addFriend(User friend) {
 			synchronized(friends) {
-				friends.put(name, friend);
+				friends.add(friend);
+			}
+		}
+		
+		public void acceptFriend(User Friend) {
+			Iterator<User> it = friends.iterator();
+			while(it.hasNext()) {
+				User ami = it.next();
+				if(ami.equals(Friend)) {
+					ami.setAccepted(true);
+					break;
+				}
 			}
 		}
 
@@ -166,7 +182,11 @@
 		* @return Une liste de messages.
 		*/
 		public List<Message> getMessages() {
-			return messages.clone();
+			List<Message> res = new Vector<Message>();
+			Iterator<Message> it = messages.iterator();
+			while(it.hasNext())
+				res.add(it.next());
+			return res;
 		}
 
 		/**

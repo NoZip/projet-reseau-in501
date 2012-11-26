@@ -1,4 +1,5 @@
-import org.json.JSONObject
+import org.json.JSONException;
+import org.json.JSONObject;
 
 class UserProfile {
 
@@ -22,8 +23,8 @@ class UserProfile {
 	 * @return Les données utilisateur correspondant à l'objet JSON.
 	 * @throws JSONException
 	 */
-	public static UserProfile fromJSON(JSONObject source) throws JSONException {
-		return new UserProfile(source.getString("name"))
+	public static UserProfile fromJSON(JSONObject source) throws JSONException{
+		return new UserProfile(source.getString("name"));
 	}
 
 	/**
