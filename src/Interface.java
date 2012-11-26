@@ -13,6 +13,8 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
+import org.json.JSONException;
+
 import java.net.InetAddress;
 
 public class Interface extends JFrame {
@@ -45,6 +47,8 @@ public class Interface extends JFrame {
 		addFriend.setMaximumSize(new Dimension(Integer.MAX_VALUE, addFriend.getMinimumSize().height));
 		panel.add(addFriend);
 		JButton addButton = new JButton("Add");
+		addButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+		panel.add(addButton);
 		
 		/* Une zone de texte et un bouton pour poster */
 		postText = new JTextField(40);
@@ -56,10 +60,11 @@ public class Interface extends JFrame {
 			public void actionPerformed(ActionEvent event) {
 				try {
 					String infoFriend = addFriend.getText();
+					addFriend.setText("");
 					String[] infoFriendTrie = infoFriend.split(":");
 					pod.sendAddFriend(infoFriendTrie[0],InetAddress.getByName(infoFriendTrie[1]),Integer.parseInt(infoFriendTrie[2]));
 				}catch(Exception e){
-					;//l'ajout n'a pas été demandé de la bonne façon
+					System.out.println("Erreur ajout d'ami");//l'ajout n'a pas été demandé de la bonne façon
 				}				
 			}
 		});
@@ -67,7 +72,14 @@ public class Interface extends JFrame {
 		postButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				/* Ajoute le statut */
-				JLabel label = new JLabel("new status " + postText.getText());
+				String myMsg = postText.getText();
+				try {
+					pod.sendMessage(myMsg);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				JLabel label = new JLabel("new status " + myMsg);
 				postText.setText("");
 				me.add(label);
 				/* Et redessine */
@@ -76,8 +88,7 @@ public class Interface extends JFrame {
 		});
 
 		
-		addButton.setAlignmentX(Component.LEFT_ALIGNMENT);
-		panel.add(addButton);
+
 		postButton.setAlignmentX(Component.LEFT_ALIGNMENT);
 		panel.add(postButton);
 
@@ -96,11 +107,6 @@ public class Interface extends JFrame {
 		me.setAlignmentY(Component.TOP_ALIGNMENT);
 		people.add(me);
 
-		label = new JLabel("my status1");
-		me.add(label);
-		label = new JLabel("my status2");
-		me.add(label);
-
 		/* Une petite sÃ©paration entre moi et lui */
 		people.add(Box.createRigidArea(new Dimension(5,0)));
 
@@ -110,11 +116,6 @@ public class Interface extends JFrame {
 		them.setLayout(new BoxLayout(them, BoxLayout.Y_AXIS));
 		them.setAlignmentY(Component.TOP_ALIGNMENT);
 		people.add(them);
-
-		label = new JLabel("his status1");
-		them.add(label);
-		label = new JLabel("his status2");
-		them.add(label);
 
 		/* De la place pour les autres */
 		people.add(Box.createHorizontalGlue());
@@ -127,6 +128,7 @@ public class Interface extends JFrame {
 	}
 	
 	public void afficherMessage(String line){
+		System.out.println("Message = "+ line);
 		them.add(new JLabel(line));
 		panel.validate();
 	}

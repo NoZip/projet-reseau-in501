@@ -28,8 +28,8 @@ import org.json.JSONObject;
 			this.owner = new UserProfile(username);
 		}
 		
-		public void start(){
-			myInterface.initUI();
+		public Interface getInterface(){
+			return myInterface;
 		}
 
 		public void listen(int port) {
@@ -42,7 +42,7 @@ import org.json.JSONObject;
 
 					// On redirige le socket qui s'est connecté vers un thread
 					ConnectionThread handler = new ConnectionThread(this, socket);
-					handler.run();
+					handler.start();
 				}
 			} catch(Exception e){
 				;//tant pis
@@ -54,6 +54,7 @@ import org.json.JSONObject;
 		 * @param client Le socket du pod qui a envoyé la commande.
 		 */
 		public void handleRequest(Socket client) {
+			System.out.println("Je re�ois une requ�te");
 			// Le traitement se déroule en trois phases:
 			// 1: lectures des données dans le socket.
 			// 2: séparation de la commande et des arguments.
@@ -203,6 +204,7 @@ import org.json.JSONObject;
 		public void addMessage(Message message) {
 			synchronized(messages) {
 				messages.add(message);
+				System.out.println(message.getContent());
 				myInterface.afficherMessage(message.getContent());
 			}
 		}

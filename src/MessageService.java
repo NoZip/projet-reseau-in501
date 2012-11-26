@@ -20,6 +20,7 @@ public class MessageService extends Service {
 	 */
 	@Override
 	public void execute(InetAddress addr, int port, JSONObject arguments) {
+		System.out.println("Message reçu");
 		try {
 			pod.addMessage(Message.fromJSON(arguments));
 		} catch (JSONException | ParseException e) {
