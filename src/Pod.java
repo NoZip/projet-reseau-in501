@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Vector;
 import java.net.ServerSocket;
 import java.io.*;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 	public class Pod {
@@ -14,6 +16,7 @@ import org.json.JSONObject;
 		protected Map<String, Service> services;
 		protected List<User> friends;
 		protected List<Message> messages;
+		protected Interface myInterface;
 
 		protected UserProfile owner;
 
@@ -21,8 +24,12 @@ import org.json.JSONObject;
 			this.services = new Hashtable<String, Service>();
 			this.friends = new Vector<User>();
 			this.messages = new Vector<Message>();
-
+			this.myInterface = new Interface(this);
 			this.owner = new UserProfile(username);
+		}
+		
+		public void start(){
+			myInterface.initUI();
 		}
 
 		public void listen(int port) {
@@ -196,6 +203,7 @@ import org.json.JSONObject;
 		public void addMessage(Message message) {
 			synchronized(messages) {
 				messages.add(message);
+				myInterface.afficherMessage(message.getContent());
 			}
 		}
 
@@ -205,4 +213,20 @@ import org.json.JSONObject;
 		public UserProfile getOwner() {
 			return owner;
 		}
-	}
+		
+		public void sendAddFriend(String friendName, InetAddress addr,int port) throws JSONException{
+			sendCommand(addr,port,"ADD",owner.toJSON());
+			User  newFriend = new User(new UserProfile(friendName), new PodLocation(addr,port),false);
+			addFriend(newFriend);
+		}
+		
+		public void sendMessage(String msg) throws JSONException{
+			Iterator<User> it = friends.iterator();
+			JSONObject message = new JSONObject();
+			message.put("content", msg);
+			while(it.hasNext()) {
+				User ami = it.next();
+				sendCommand(ami.getLocation().getAddress(),ami.getLocation().getPort(),"MSG",message);
+				}	
+		}
+}

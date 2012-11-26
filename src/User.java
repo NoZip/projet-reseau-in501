@@ -14,7 +14,7 @@ public class User {
 	}
 
 	public boolean equals(User user) {
-		return this.profile.equals(user) && this.location.equals(user.location) ;
+		return this.location.equals(user.location) ;
 	}
 	
 	public UserProfile getProfile() {
