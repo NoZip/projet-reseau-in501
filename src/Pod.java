@@ -6,6 +6,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 import java.net.ServerSocket;
+import java.nio.ByteBuffer;
 import java.io.*;
 
 import org.json.JSONException;
@@ -54,7 +55,7 @@ import org.json.JSONObject;
 		 * @param client Le socket du pod qui a envoyé la commande.
 		 */
 		public void handleRequest(Socket client) {
-			System.out.println("Je re�ois une requ�te");
+			System.out.println("Je reçois une requête");
 			// Le traitement se déroule en trois phases:
 			// 1: lectures des données dans le socket.
 			// 2: séparation de la commande et des arguments.
@@ -63,22 +64,25 @@ import org.json.JSONObject;
 				InetAddress addr = client.getInetAddress();
 				int port = client.getPort();
 				// Phase 1:
-				StringBuffer buf = new StringBuffer();
+				ByteBuffer buf = ByteBuffer.allocate(256);
 				InputStream is = client.getInputStream();
 				byte[] readData = new byte[128];
 				while(is.read(readData)>0){
-					buf.append(readData.toString()) ;
+					buf.put(readData) ;
 				}
-				String inputData = new String(buf) ;
+				String inputData = new String(buf.array()) ;
 				// Phase 2:
-				String[] tmp = inputData.split(" ", 2);
+				String[] tmp = new String[2];
+				tmp = inputData.split(" ", 2);
+				System.out.println(inputData +" "+ tmp.length);
 
 				// Phase 3:
 				// On lance la commande avec les arguments
 				runCommand(tmp[0], addr, port,new JSONObject(tmp[1]));
 				//verifie response et agir en consequence
 			}catch(Exception e){
-				;
+				e.printStackTrace();
+				System.out.println("il y a eu un problème");
 			}
 		}
 
@@ -159,8 +163,10 @@ import org.json.JSONObject;
 		* @param friend L'objet utilisateur représentant l'ami.
 		*/
 		public void addFriend(User friend) {
+			System.out.println("Ami ajouté" + friend.getName());
 			synchronized(friends) {
 				friends.add(friend);
+				System.out.println("Nouveau Friends : " + friends.toString());
 			}
 		}
 		
@@ -217,7 +223,7 @@ import org.json.JSONObject;
 		}
 		
 		public void sendAddFriend(String friendName, InetAddress addr,int port) throws JSONException{
-			sendCommand(addr,port,"ADD",owner.toJSON());
+			//sendCommand(addr,port,"ADD",owner.toJSON());
 			User  newFriend = new User(new UserProfile(friendName), new PodLocation(addr,port),false);
 			addFriend(newFriend);
 		}

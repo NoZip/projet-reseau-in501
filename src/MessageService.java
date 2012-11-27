@@ -22,7 +22,7 @@ public class MessageService extends Service {
 	public void execute(InetAddress addr, int port, JSONObject arguments) {
 		System.out.println("Message reçu");
 		try {
-			pod.addMessage(Message.fromJSON(arguments));
+			pod.getInterface().afficherMessage(Message.fromJSON(arguments).getContent());
 		} catch (JSONException | ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
