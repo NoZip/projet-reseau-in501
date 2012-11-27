@@ -1,5 +1,6 @@
 import java.net.Socket;
 import java.net.InetAddress;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Hashtable;
@@ -232,6 +233,7 @@ import org.json.JSONObject;
 			Iterator<User> it = friends.iterator();
 			JSONObject message = new JSONObject();
 			message.put("content", msg);
+			message.put("date", Message.dateFormat.format(new Date()));
 			while(it.hasNext()) {
 				User ami = it.next();
 				sendCommand(ami.getLocation().getAddress(),ami.getLocation().getPort(),"MSG",message);
