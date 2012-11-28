@@ -5,6 +5,7 @@ public class Start {
 		Pod pod = new Pod(args[0],Integer.parseInt(args[1]));
 		pod.addService("MSG", new MessageService(pod));
 		pod.addService("ADD", new AddService(pod));
+		pod.addService("USER", new UserService(pod));
 		ServerThread thread = new ServerThread(pod);
 		thread.start();
 		Interface mine = pod.getInterface();

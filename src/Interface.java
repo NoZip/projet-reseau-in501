@@ -122,7 +122,7 @@ public class Interface extends JFrame {
 		people.add(Box.createHorizontalGlue());
 
 		/* Le reste de l'interface */
-		setTitle("Social");
+		setTitle(pod.getOwner().getName());
 		setSize(500, 500);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);

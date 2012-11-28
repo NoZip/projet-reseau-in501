@@ -10,21 +10,23 @@ public class AddService extends Service {
 	}
 	
 	public void execute(InetAddress addr, int port, JSONObject arguments) {
-		UserProfile friendInfo;
-		User friend ;
 		try {
-			friendInfo = UserProfile.fromJSON(arguments);
-			friend = new User(friendInfo,new PodLocation(addr,port));
+			UserProfile friendProfile = UserProfile.fromJSON(arguments.getJSONObject("profile"));
+			PodLocation friendLocation = new PodLocation(addr, arguments.getInt("listening_port"));
+			User friend = new User(friendProfile, friendLocation);
+			
 			JSONObject reponse = new JSONObject();
 			reponse.put("profile", pod.getOwner().toJSON());
-			if(Interface.demandeAmi(friendInfo.getName())){
+			
+			if(Interface.demandeAmi(friendProfile.getName())) {
 				pod.addFriend(friend);
 				reponse.put("response", true);
-				reponse.put("listening_port", pod.getListeningPort());
 			}
-			else
+			else {
 				reponse.put("response",false);
-			pod.sendCommand(addr,port,"USER",reponse);
+			}
+			
+			pod.sendCommand(addr, friendLocation.getPort(),"USER",reponse);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -20,7 +20,7 @@ import org.json.JSONObject;
 		protected List<PodLocation> pendingFriends;
 		protected List<Message> messages;
 		protected Interface myInterface;
-		protected int port;
+		protected int listeningPort;
 
 		protected UserProfile owner;
 
@@ -29,14 +29,14 @@ import org.json.JSONObject;
 			this.friends = new Vector<User>();
 			this.pendingFriends = new Vector<PodLocation>();
 			this.messages = new Vector<Message>();
-			this.myInterface = new Interface(this);
 			this.owner = new UserProfile(username);
-			this.port = port;
+			this.listeningPort = port;
 			
+			this.myInterface = new Interface(this);
 		}
 		
 		public int getListeningPort(){
-			return this.port;
+			return this.listeningPort;
 		}
 		
 		public Interface getInterface(){
@@ -45,7 +45,7 @@ import org.json.JSONObject;
 
 		public void listen() {
 			try {
-				int port = this.port;
+				int port = this.listeningPort;
 				ServerSocket serverSocket = new ServerSocket(port); //creation du serveur
 
 				// Boucle d'écoute
@@ -66,7 +66,7 @@ import org.json.JSONObject;
 		 * @param client Le socket du pod qui a envoyé la commande.
 		 */
 		public void handleRequest(Socket client) {
-			System.out.println("Je reçois une requête");
+			System.out.println("Je reçois une commande");
 			// Le traitement se déroule en trois phases:
 			// 1: lectures des données dans le socket.
 			// 2: séparation de la commande et des arguments.
@@ -76,23 +76,27 @@ import org.json.JSONObject;
 				int port = client.getPort();
 				PodLocation clientLocation = new PodLocation(addr, port);
 				System.out.println(clientLocation.toString());
+				
 				// Phase 1:
-				ByteBuffer buf = ByteBuffer.allocate(256);
-				InputStream is = client.getInputStream();
+				ByteBuffer buffer = ByteBuffer.allocate(256);
+				InputStream in = client.getInputStream();
 				byte[] readData = new byte[128];
-				while(is.read(readData)>0){
-					buf.put(readData) ;
+				
+				while(in.read(readData)>0){
+					buffer.put(readData) ;
 				}
-				String inputData = new String(buf.array()) ;
+				
+				String inputData = new String(buffer.array()) ;
+				
 				// Phase 2:
 				String[] tmp = new String[2];
 				tmp = inputData.split(" ", 2);
-				System.out.println(inputData +" "+ tmp.length);
+				System.out.println("Commande: " + tmp[0]);
+				System.out.println("Arguments: " + tmp[1]);
 
 				// Phase 3:
 				// On lance la commande avec les arguments
-				runCommand(tmp[0], addr, port,new JSONObject(tmp[1]));
-				//verifie response et agir en consequence
+				runCommand(tmp[0], addr, port, new JSONObject(tmp[1]));
 			}catch(Exception e){
 				e.printStackTrace();
 				System.out.println("il y a eu un problème");
@@ -116,8 +120,13 @@ import org.json.JSONObject;
 		* @param arguments Les arguments de la commande.
 		*/
 		public void sendCommand(InetAddress addr, int port, String command, JSONObject arguments) {
+			System.out.println("Envoi d'une commande");
+			System.out.println(addr.toString() + ':' + port);
+			System.out.println("Commande: " + command);
+			System.out.println("Arguments: " + arguments.toString());
+			
 			try {
-				Socket sock = new Socket(addr,port); //on cree la socket d'ecriture
+				Socket sock = new Socket(addr, port); //on cree la socket d'ecriture
 				OutputStream os = sock.getOutputStream(); //on cree le stream
 				StringBuffer tmpBuf = new StringBuffer(command + " " + arguments.toString()) ; //on cree la chaine a envoyer
 				String tmp = new String(tmpBuf);
@@ -227,9 +236,16 @@ import org.json.JSONObject;
 			return owner;
 		}
 		
-		public void sendAddFriend(String friendName, InetAddress addr,int port) throws JSONException{
-			pendingFriends.add(new PodLocation(addr,port));
-			sendCommand(addr,port,"ADD",owner.toJSON());
+		public void sendAddFriend(String friendName, InetAddress addr, int port) throws JSONException{
+			PodLocation friendLocation = new PodLocation(addr,port);
+			System.out.println(friendLocation.toString());
+			pendingFriends.add(friendLocation);
+			
+			JSONObject json = new JSONObject();
+			json.put("profile", owner.toJSON());
+			json.put("listening_port", listeningPort);
+			
+			sendCommand(addr,port,"ADD", json);
 		}
 		
 		public void sendMessage(String msg) throws JSONException{
