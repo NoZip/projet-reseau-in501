@@ -16,8 +16,8 @@ import org.json.JSONObject;
 	public class Pod {
 
 		protected Map<String, Service> services;
-		protected Vector<User> friends;
-		protected Vector<User> pendingFriends;
+		protected List<User> friends;
+		protected List<PodLocation> pendingFriends;
 		protected List<Message> messages;
 		protected Interface myInterface;
 
@@ -26,7 +26,7 @@ import org.json.JSONObject;
 		public Pod(String username){
 			this.services = new Hashtable<String, Service>();
 			this.friends = new Vector<User>();
-			this.pendingFriends = new Vector<User>();
+			this.pendingFriends = new Vector<PodLocation>();
 			this.messages = new Vector<Message>();
 			this.myInterface = new Interface(this);
 			this.owner = new UserProfile(username);
@@ -66,6 +66,8 @@ import org.json.JSONObject;
 			try {
 				InetAddress addr = client.getInetAddress();
 				int port = client.getPort();
+				PodLocation clientLocation = new PodLocation(addr, port);
+				System.out.println(clientLocation.toString());
 				// Phase 1:
 				ByteBuffer buf = ByteBuffer.allocate(256);
 				InputStream is = client.getInputStream();
@@ -180,6 +182,10 @@ import org.json.JSONObject;
 			synchronized(services) {
 				friends.remove(index);
 			}
+		}
+		
+		public List<PodLocation> getPendingFriends() {
+			return pendingFriends;
 		}
 
 		/**

@@ -27,6 +27,6 @@ class PodLocation {
 	}
 	
 	public String toString() {
-		return address.toString() + String.valueOf(port);
+		return address.toString() + ':' + String.valueOf(port);
 	}
 }

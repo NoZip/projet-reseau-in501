@@ -17,9 +17,9 @@ public class UserService extends Service {
 		try {
 			friendProfile = UserProfile.fromJSON(arguments);
 			friend = new User(friendProfile, new PodLocation(addr, port));
-			Iterator<User> it = pod.getPendingFriends().iterator();
+			Iterator<PodLocation> it = pod.getPendingFriends().iterator();
 			while(it.hasNext()) {
-				if(it.next().equals(friend)) {
+				if(it.next().equals(friend.getLocation())) {
 					it.remove();
 					pod.addFriend(friend);
 					break;
