@@ -64,7 +64,7 @@ public class Interface extends JFrame {
 					String[] infoFriendTrie = infoFriend.split(":");
 					pod.sendAddFriend(infoFriendTrie[0],InetAddress.getByName(infoFriendTrie[1]),Integer.parseInt(infoFriendTrie[2]));
 				}catch(Exception e){
-					System.out.println("Erreur ajout d'ami");//l'ajout n'a pas été demandé de la bonne façon
+					System.out.println("Erreur ajout d'ami");//l'ajout n'a pas Ã©tÃ© demandÃ© de la bonne faÃ§on
 				}				
 			}
 		});

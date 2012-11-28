@@ -20,12 +20,15 @@ public class MessageService extends Service {
 	 */
 	@Override
 	public void execute(InetAddress addr, int port, JSONObject arguments) {
-		System.out.println("Message reçu");
-		try {
-			pod.getInterface().afficherMessage(Message.fromJSON(arguments).getContent());
-		} catch (JSONException | ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		System.out.println("Message reÃ§u");
+			try {
+				pod.getInterface().afficherMessage(Message.fromJSON(arguments).getContent());
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 }

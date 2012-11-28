@@ -26,15 +26,7 @@ class PodLocation {
 			   && this.port == other.port;
 	}
 	
-	public JSONObject toJSON() throws JSONException{
-		JSONObject json = new JSONObject();
-		json.put("address",address);
-		json.put("port", port);
-		return json;
+	public String toString() {
+		return address.toString() + String.valueOf(port);
 	}
-		
-	public static PodLocation fromJSON(JSONObject json) throws JSONException{
-		return new PodLocation((InetAddress) json.get("address"),(int) json.get("port"));
-	}
-	
 }

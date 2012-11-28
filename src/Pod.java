@@ -102,7 +102,6 @@ import org.json.JSONObject;
 		* @param url L'adresse du pod auquel envoyer la commande.
 		* @param command La commande à envoyer.
 		* @param arguments Les arguments de la commande.
-		* @todo Récrire la fonction.
 		*/
 		public void sendCommand(InetAddress addr, int port, String command, JSONObject arguments) {
 			try {
@@ -114,7 +113,7 @@ import org.json.JSONObject;
 				os.close();
 				sock.close();
 			} catch(Exception e){
-				;//tant pis
+				e.printStackTrace();
 			}
 		}
 
@@ -237,6 +236,6 @@ import org.json.JSONObject;
 			while(it.hasNext()) {
 				User ami = it.next();
 				sendCommand(ami.getLocation().getAddress(),ami.getLocation().getPort(),"MSG",message);
-				}	
+			}	
 		}
 }
