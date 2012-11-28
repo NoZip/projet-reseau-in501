@@ -25,7 +25,7 @@ public class AddService extends Service {
 			else {
 				reponse.put("response",false);
 			}
-			
+			System.out.println("***"+friendLocation.getPort()+"***");
 			pod.sendCommand(addr, friendLocation.getPort(),"USER",reponse);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block

@@ -1,6 +1,7 @@
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Color;
+import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -10,6 +11,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.BoxLayout;
 import javax.swing.Box;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -80,7 +83,7 @@ public class Interface extends JFrame {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				JLabel label = new JLabel("new status " + myMsg);
+				JLabel label = new JLabel(myMsg);
 				postText.setText("");
 				me.add(label);
 				/* Et redessine */
@@ -98,7 +101,7 @@ public class Interface extends JFrame {
 		panel.add(people);
 		people.setAlignmentX(Component.LEFT_ALIGNMENT);
 		/* Les personnes sont affichées de gauche à droite */
-		people.setLayout(new BoxLayout(people, BoxLayout.X_AXIS));
+		people.setLayout(new GridLayout());
 
 		/* Moi */
 		me = new JPanel();
@@ -106,17 +109,20 @@ public class Interface extends JFrame {
 		/* Mes commentaires sont affichés de haut en bas */
 		me.setLayout(new BoxLayout(me, BoxLayout.Y_AXIS));
 		me.setAlignmentY(Component.TOP_ALIGNMENT);
-		people.add(me);
+		JScrollPane meScroll = new JScrollPane(me);
+		people.add(meScroll);
 
 		/* Une petite séparation entre moi et lui */
-		people.add(Box.createRigidArea(new Dimension(5,0)));
+		//people.add(Box.createRigidArea(new Dimension(5,0)));
 
 		/* Un ami */
 		them = new JPanel();
 		them.setBorder(new LineBorder(Color.black));
 		them.setLayout(new BoxLayout(them, BoxLayout.Y_AXIS));
 		them.setAlignmentY(Component.TOP_ALIGNMENT);
-		people.add(them);
+		JScrollPane themScroll = new JScrollPane(them);
+		people.add(themScroll);
+		people.add(themScroll);
 
 		/* De la place pour les autres */
 		people.add(Box.createHorizontalGlue());
