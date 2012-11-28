@@ -7,10 +7,9 @@ public class User {
 	protected PodLocation location;
 	protected boolean accepted;
 
-	public User(UserProfile profile, PodLocation location, boolean accepted) {
+	public User(UserProfile profile, PodLocation location) {
 		this.profile = profile;
 		this.location = location;
-		this.accepted = accepted;
 	}
 
 	public boolean equals(User user) {
@@ -23,14 +22,6 @@ public class User {
 
 	public PodLocation getLocation() {
 		return location;
-	}
-
-	public boolean isAccepted() {
-		return accepted;
-	}
-
-	public void setAccepted(boolean accepted) {
-		this.accepted = accepted;
 	}
 	
 	public String getName(){
@@ -46,6 +37,6 @@ public class User {
 	}
 	
 	public static User fromJSON(JSONObject json) throws JSONException{
-		return new User((UserProfile) json.get("profile"), (PodLocation) json.get("location"), json.getBoolean("accepted"));
+		return new User((UserProfile) json.get("profile"), (PodLocation) json.get("location"));
 	}
 }

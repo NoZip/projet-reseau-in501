@@ -16,7 +16,8 @@ import org.json.JSONObject;
 	public class Pod {
 
 		protected Map<String, Service> services;
-		protected List<User> friends;
+		protected Vector<User> friends;
+		protected Vector<User> pendingFriends;
 		protected List<Message> messages;
 		protected Interface myInterface;
 
@@ -25,6 +26,7 @@ import org.json.JSONObject;
 		public Pod(String username){
 			this.services = new Hashtable<String, Service>();
 			this.friends = new Vector<User>();
+			this.pendingFriends = new Vector<User>();
 			this.messages = new Vector<Message>();
 			this.myInterface = new Interface(this);
 			this.owner = new UserProfile(username);
@@ -169,17 +171,6 @@ import org.json.JSONObject;
 				System.out.println("Nouveau Friends : " + friends.toString());
 			}
 		}
-		
-		public void acceptFriend(User Friend) {
-			Iterator<User> it = friends.iterator();
-			while(it.hasNext()) {
-				User ami = it.next();
-				if(ami.equals(Friend)) {
-					ami.setAccepted(true);
-					break;
-				}
-			}
-		}
 
 		/**
 		* Supprime un ami.
@@ -223,9 +214,9 @@ import org.json.JSONObject;
 		}
 		
 		public void sendAddFriend(String friendName, InetAddress addr,int port) throws JSONException{
-			//sendCommand(addr,port,"ADD",owner.toJSON());
-			User  newFriend = new User(new UserProfile(friendName), new PodLocation(addr,port),false);
-			addFriend(newFriend);
+			sendCommand(addr,port,"ADD",owner.toJSON());
+			User  newFriend = new User(new UserProfile(friendName), new PodLocation(addr,port));
+			pendingFriends.add(newFriend);
 		}
 		
 		public void sendMessage(String msg) throws JSONException{

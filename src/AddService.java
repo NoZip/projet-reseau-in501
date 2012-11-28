@@ -14,7 +14,7 @@ public class AddService extends Service {
 		User friend ;
 		try {
 			friendInfo = UserProfile.fromJSON(arguments);
-			friend = new User(friendInfo,new PodLocation(addr,port),false);
+			friend = new User(friendInfo,new PodLocation(addr,port));
 			pod.addFriend(friend);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
