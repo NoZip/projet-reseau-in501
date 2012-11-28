@@ -36,7 +36,6 @@ public class Interface extends JFrame {
 	}
 	
 	public final void initUI() {
-		JLabel label;
 
 		panel = new JPanel();
 		getContentPane().add(panel);
