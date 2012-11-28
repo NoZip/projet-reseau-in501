@@ -12,16 +12,19 @@ public class UserService extends Service {
 	}
 	
 	public void execute(InetAddress addr, int port, JSONObject arguments){
-		UserProfile friendInfo;
+		UserProfile friendProfile;
 		User friend;
 		try {
-			friendInfo = UserProfile.fromJSON(arguments);
-			friend = new User(friendInfo,new PodLocation(addr,port));
-			Iterator<User> it = pod.pendingFriends.iterator();
-			while(it.hasNext())
-				if(it.next().equals(friend))
+			friendProfile = UserProfile.fromJSON(arguments);
+			friend = new User(friendProfile, new PodLocation(addr, port));
+			Iterator<User> it = pod.getPendingFriends().iterator();
+			while(it.hasNext()) {
+				if(it.next().equals(friend)) {
 					it.remove();
-					pod.addFriend(friend);	
+					pod.addFriend(friend);
+					break;
+				}
+			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
