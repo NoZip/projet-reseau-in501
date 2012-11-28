@@ -20,6 +20,7 @@ public class AddService extends Service {
 			if(Interface.demandeAmi(friendInfo.getName())){
 				pod.addFriend(friend);
 				reponse.put("response", true);
+				response.put("listening_port", pod.getListeningPort());
 			}
 			else
 				reponse.put("response",false);
