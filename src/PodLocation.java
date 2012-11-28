@@ -1,8 +1,5 @@
 import java.net.InetAddress;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 class PodLocation {
 
 	protected InetAddress address;

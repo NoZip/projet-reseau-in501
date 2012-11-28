@@ -15,13 +15,18 @@ public class UserService extends Service {
 		UserProfile friendProfile;
 		User friend;
 		try {
-			friendProfile = UserProfile.fromJSON(arguments);
+			friendProfile = UserProfile.fromJSON(arguments.getJSONObject("user"));
 			friend = new User(friendProfile, new PodLocation(addr, port));
 			Iterator<PodLocation> it = pod.getPendingFriends().iterator();
 			while(it.hasNext()) {
 				if(it.next().equals(friend.getLocation())) {
 					it.remove();
-					pod.addFriend(friend);
+					if(arguments.getBoolean("response")){
+						Interface.resultatInvitation(friendProfile.getName(),true);
+						pod.addFriend(friend);
+					}
+					else
+						Interface.resultatInvitation(friendProfile.getName(),false);
 					break;
 				}
 			}

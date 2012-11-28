@@ -15,7 +15,15 @@ public class AddService extends Service {
 		try {
 			friendInfo = UserProfile.fromJSON(arguments);
 			friend = new User(friendInfo,new PodLocation(addr,port));
-			pod.addFriend(friend);
+			JSONObject reponse = new JSONObject();
+			reponse.put("profile", pod.getOwner().toJSON());
+			if(Interface.demandeAmi(friendInfo.getName())){
+				pod.addFriend(friend);
+				reponse.put("response", true);
+			}
+			else
+				reponse.put("response",false);
+			pod.sendCommand(addr,port,"USER",reponse);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

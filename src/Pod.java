@@ -220,9 +220,8 @@ import org.json.JSONObject;
 		}
 		
 		public void sendAddFriend(String friendName, InetAddress addr,int port) throws JSONException{
+			pendingFriends.add(new PodLocation(addr,port));
 			sendCommand(addr,port,"ADD",owner.toJSON());
-			User  newFriend = new User(new UserProfile(friendName), new PodLocation(addr,port));
-			pendingFriends.add(newFriend);
 		}
 		
 		public void sendMessage(String msg) throws JSONException{

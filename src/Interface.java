@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 import javax.swing.BoxLayout;
 import javax.swing.Box;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -64,6 +65,7 @@ public class Interface extends JFrame {
 					String[] infoFriendTrie = infoFriend.split(":");
 					pod.sendAddFriend(infoFriendTrie[0],InetAddress.getByName(infoFriendTrie[1]),Integer.parseInt(infoFriendTrie[2]));
 				}catch(Exception e){
+					JOptionPane.showMessageDialog(null, "Erreur ajout d'ami","Erreur",JOptionPane.ERROR_MESSAGE) ;
 					System.out.println("Erreur ajout d'ami");//l'ajout n'a pas été demandé de la bonne façon
 				}				
 			}
@@ -133,5 +135,14 @@ public class Interface extends JFrame {
 		panel.validate();
 	}
 	
+	public static boolean demandeAmi(String name){
+		int reponse = JOptionPane.showConfirmDialog(null, "Voulez-vous ajouter " + name +" ?", 
+				"Demande d'ami", JOptionPane.YES_NO_OPTION);
+		return (reponse == JOptionPane.YES_OPTION);
+	}
+	
+	public static void resultatInvitation(String name, Boolean result){
+		JOptionPane.showMessageDialog(null, name + " " + (result ? "vous a" : "ne vous a pas") + " accepté");
+	}
 	
 }
