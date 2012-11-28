@@ -1,15 +1,13 @@
 public class ServerThread extends Thread {
 	
 	private Pod pod;
-	private int port;
 	
-	public ServerThread(Pod pod, int port){
+	public ServerThread(Pod pod){
 		this.pod = pod ;
-		this.port = port;
 	}
 	
 	public void run(){
-		pod.listen(port);
+		pod.listen();
 	}
 
 }

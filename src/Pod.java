@@ -20,24 +20,32 @@ import org.json.JSONObject;
 		protected List<PodLocation> pendingFriends;
 		protected List<Message> messages;
 		protected Interface myInterface;
+		protected int port;
 
 		protected UserProfile owner;
 
-		public Pod(String username){
+		public Pod(String username, int port){
 			this.services = new Hashtable<String, Service>();
 			this.friends = new Vector<User>();
 			this.pendingFriends = new Vector<PodLocation>();
 			this.messages = new Vector<Message>();
 			this.myInterface = new Interface(this);
 			this.owner = new UserProfile(username);
+			this.port = port;
+			
+		}
+		
+		public int getListeningPort(){
+			return this.port;
 		}
 		
 		public Interface getInterface(){
 			return myInterface;
 		}
 
-		public void listen(int port) {
+		public void listen() {
 			try {
+				int port = this.port;
 				ServerSocket serverSocket = new ServerSocket(port); //creation du serveur
 
 				// Boucle d'écoute
