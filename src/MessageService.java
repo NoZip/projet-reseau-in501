@@ -1,6 +1,7 @@
 
 import java.net.InetAddress;
 import java.text.ParseException;
+import java.util.Iterator;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,14 +22,21 @@ public class MessageService extends Service {
 	@Override
 	public void execute(InetAddress addr, int port, JSONObject arguments) {
 		System.out.println("Message reçu");
-			try {
-				pod.getInterface().afficherMessage(Message.fromJSON(arguments).getContent());
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		Iterator<User> it = pod.getFriendList().iterator();
+		while(it.hasNext()){
+			User friend = it.next();
+			if( addr.equals(friend.getLocation().getAddress())){  //on verifie que la personne qui envoie le msg est bien un ami.
+				try {
+					pod.getInterface().afficherMessage(friend.getName() + " dit : "+ Message.fromJSON(arguments).getContent());
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				break;
 			}
+		}
 	}
 }
