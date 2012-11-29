@@ -1,6 +1,5 @@
 import java.net.Socket;
 import java.net.InetAddress;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Hashtable;

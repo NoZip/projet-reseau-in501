@@ -13,8 +13,12 @@ class UserProfile {
 		return name;
 	}
 
-	public boolean equals(UserProfile other) {
-		return this.name == other.name;
+	public boolean equals(Object o) {
+		if(o instanceof  UserProfile){
+			UserProfile other = (UserProfile) o;
+			return this.name == other.name;
+		}
+		return false;
 	}
 
 	/**

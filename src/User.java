@@ -12,8 +12,12 @@ public class User {
 		this.location = location;
 	}
 
-	public boolean equals(User user) {
-		return this.location.equals(user.location) ;
+	public boolean equals(Object o) {
+		if(o instanceof User){
+			User user = (User) o;
+			return this.location.equals(user.location) ;
+		}
+		return false;
 	}
 	
 	public UserProfile getProfile() {
