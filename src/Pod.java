@@ -272,9 +272,6 @@ public class Pod {
 				e.printStackTrace();
 			}
 		}
-		
-		// On affiche le message dans l'interface
-		myInterface.afficherMessage(message.getContent());
 	}
 
 	/**
