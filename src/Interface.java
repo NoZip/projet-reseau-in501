@@ -66,7 +66,9 @@ public class Interface extends JFrame {
 					String infoFriend = addFriend.getText();
 					addFriend.setText("");
 					String[] infoFriendTrie = infoFriend.split(":");
-					pod.sendAddFriend(infoFriendTrie[0],InetAddress.getByName(infoFriendTrie[1]),Integer.parseInt(infoFriendTrie[2]));
+					PodLocation friendLocation = new PodLocation(InetAddress.getByName(infoFriendTrie[0]),
+																 Integer.parseInt(infoFriendTrie[1]));
+					pod.addPendingFriend(friendLocation);
 				}catch(Exception e){
 					JOptionPane.showMessageDialog(null, "Erreur ajout d'ami","Erreur",JOptionPane.ERROR_MESSAGE) ;
 					System.out.println("Erreur ajout d'ami");//l'ajout n'a pas été demandé de la bonne façon

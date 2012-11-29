@@ -209,7 +209,29 @@ public class Pod {
 	
 	public void addPendingFriend(PodLocation friendLocation) {
 		if (!pendingFriends.contains(friendLocation)) {
-			pendingFriends.add(friendLocation);
+			
+			// On ajoute l'ami aux requetes en cours
+			synchronized(pendingFriends) {
+				pendingFriends.add(friendLocation);
+			}
+			
+			System.out.println(friendLocation.toString());
+			
+			// On envoir une commande ADD au Pod avec lequel on veut se lier
+			JSONObject json = new JSONObject();
+			
+			try {
+				json.put("profile", owner.toJSON());
+				json.put("listening_port", listeningPort);
+			}
+			catch (JSONException e) {
+				e.printStackTrace();
+			}
+				
+			sendCommand(friendLocation.getAddress(),
+						friendLocation.getPort(),
+						"ADD",
+						json);
 		}
 	}
 
@@ -261,17 +283,5 @@ public class Pod {
 	 */
 	public UserProfile getOwner() {
 		return owner;
-	}
-	
-	public void sendAddFriend(String friendName, InetAddress addr, int port) throws JSONException{
-		PodLocation friendLocation = new PodLocation(addr,port);
-		System.out.println(friendLocation.toString());
-		pendingFriends.add(friendLocation);
-		
-		JSONObject json = new JSONObject();
-		json.put("profile", owner.toJSON());
-		json.put("listening_port", listeningPort);
-		
-		sendCommand(addr,port,"ADD", json);
 	}
 }
