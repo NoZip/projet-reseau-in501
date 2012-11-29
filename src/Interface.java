@@ -20,6 +20,7 @@ import javax.swing.JLabel;
 import org.json.JSONException;
 
 import java.net.InetAddress;
+import java.util.Date;
 
 public class Interface extends JFrame {
 
@@ -77,12 +78,8 @@ public class Interface extends JFrame {
 			public void actionPerformed(ActionEvent event) {
 				/* Ajoute le statut */
 				String myMsg = postText.getText();
-				try {
-					pod.sendMessage(myMsg);
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				Message message = new Message(myMsg, new Date());
+				pod.addMessage(message);
 				JLabel label = new JLabel(myMsg);
 				postText.setText("");
 				me.add(label);
