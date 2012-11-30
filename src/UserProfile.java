@@ -1,14 +1,26 @@
+import java.util.UUID;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 class UserProfile {
 
+	protected UUID uuid;
 	protected String name;
 
-	public UserProfile(String name) {
+	public UserProfile(UUID uuid, String name) {
+		this.uuid = uuid;
 		this.name = name;
 	}
+	
+	public UserProfile(String name) {
+		this(UUID.randomUUID(), name);
+	}
 
+	public UUID getUUID() {
+		return uuid;
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -16,8 +28,10 @@ class UserProfile {
 	public boolean equals(Object o) {
 		if(o instanceof  UserProfile){
 			UserProfile other = (UserProfile) o;
-			return this.name == other.name;
+			return  this.uuid.equals(other.uuid)
+					&& this.name == other.name;
 		}
+		
 		return false;
 	}
 
@@ -28,7 +42,8 @@ class UserProfile {
 	 * @throws JSONException
 	 */
 	public static UserProfile fromJSON(JSONObject source) throws JSONException{
-		return new UserProfile(source.getString("name"));
+		return new UserProfile(UUID.fromString(source.getString("uuid")),
+							   source.getString("name"));
 	}
 
 	/**
@@ -39,6 +54,7 @@ class UserProfile {
 	public JSONObject toJSON() throws JSONException {
 		JSONObject json = new JSONObject();
 
+		json.put("uuid", uuid.toString());
 		json.put("name", name);
 
 		return json;
