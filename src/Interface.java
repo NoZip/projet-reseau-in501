@@ -41,6 +41,7 @@ public class Interface extends JFrame {
 		getContentPane().add(panel);
 		/* Afficher d'abord la zone de post, puis les gens */
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setBackground(Color.WHITE);
 
 		/* Une zone de texte et un bouton pour ajouter un ami */
 		addFriend = new JTextField(40);
@@ -108,38 +109,45 @@ public class Interface extends JFrame {
 
 		/* Moi */
 		me = new JPanel();
+		me.setBackground(Color.WHITE);
 		me.setBorder(new LineBorder(Color.black));
 		/* Mes commentaires sont affichés de haut en bas */
 		me.setLayout(new BoxLayout(me, BoxLayout.Y_AXIS));
 		me.setAlignmentY(Component.TOP_ALIGNMENT);
 		JScrollPane meScroll = new JScrollPane(me);
 		people.add(meScroll);
-
-		/* Une petite séparation entre moi et lui */
-		//people.add(Box.createRigidArea(new Dimension(5,0)));
+		me.add(new JLabel("Mes posts :"));
+		panel.validate();
 
 		/* Un ami */
 		them = new JPanel();
+		them.setBackground(Color.WHITE);
 		them.setBorder(new LineBorder(Color.black));
 		them.setLayout(new BoxLayout(them, BoxLayout.Y_AXIS));
 		them.setAlignmentY(Component.TOP_ALIGNMENT);
 		JScrollPane themScroll = new JScrollPane(them);
 		people.add(themScroll);
 		people.add(themScroll);
+		them.add(new JLabel("Les posts de mes amis :"));
+		panel.validate();
 
 		ami = new JPanel();
+		ami.setBackground(Color.WHITE);
 		ami.setBorder(new LineBorder(Color.black));
 		ami.setLayout(new BoxLayout(ami, BoxLayout.Y_AXIS));
 		ami.setAlignmentY(Component.TOP_ALIGNMENT);
 		JScrollPane amiScroll = new JScrollPane(ami);
 		people.add(amiScroll);
 		people.add(amiScroll);
+		ami.add(new JLabel("Mes amis :"));
+		panel.validate();
 
 		/* Le reste de l'interface */
 		setTitle(pod.getOwner().getName());
 		setSize(500, 500);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
 	}
 	
 	public void afficherAmi(String friendName){
