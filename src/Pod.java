@@ -96,6 +96,17 @@ public class Pod {
 		return false;
 	}
 	
+	public boolean hasFriend(PodLocation location){
+		Collection<User> destinataires = friends.values();
+		Iterator<User> it = destinataires.iterator();		
+		while(it.hasNext()) {
+			User friend = it.next();
+			if(location.equals(friend.getLocation()))
+					return false;
+		}
+		return true;
+	}
+	
 	public User getFriend(UUID uuid){
 		return friends.get(uuid);
 	}
@@ -109,6 +120,7 @@ public class Pod {
 		if (!hasFriend(friend)) {
 			synchronized(friends) {
 				friends.put(friend.getProfile().getUUID(), friend);
+				this.myInterface.afficherAmi(friend.getName());
 				System.out.println("Ami ajouté: " + friend.getName());
 			}
 		}

@@ -9,7 +9,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 import javax.swing.BoxLayout;
-import javax.swing.Box;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -28,7 +27,7 @@ public class Interface extends JFrame {
 	
 	private Pod pod;
 	
-	static JPanel panel, me, them;
+	static JPanel panel, me, them, ami;
 	static JTextField postText, addFriend;
 	
 	public Interface(Pod pod) {
@@ -65,6 +64,7 @@ public class Interface extends JFrame {
 					String[] infoFriendTrie = infoFriend.split(":");
 					PodLocation friendLocation = new PodLocation(InetAddress.getByName(infoFriendTrie[0]),
 																 Integer.parseInt(infoFriendTrie[1]));
+					if(!pod.hasFriend(friendLocation) || pod.getLocation()){
 					pod.addPendingFriend(friendLocation);
 				}catch(Exception e){
 					JOptionPane.showMessageDialog(null, "Erreur ajout d'ami","Erreur",JOptionPane.ERROR_MESSAGE) ;
@@ -97,7 +97,7 @@ public class Interface extends JFrame {
 		panel.add(people);
 		people.setAlignmentX(Component.LEFT_ALIGNMENT);
 		/* Les personnes sont affichées de gauche à droite */
-		people.setLayout(new GridLayout());
+		people.setLayout(new GridLayout(1,3));
 
 		/* Moi */
 		me = new JPanel();
@@ -120,14 +120,24 @@ public class Interface extends JFrame {
 		people.add(themScroll);
 		people.add(themScroll);
 
-		/* De la place pour les autres */
-		people.add(Box.createHorizontalGlue());
+		ami = new JPanel();
+		ami.setBorder(new LineBorder(Color.black));
+		ami.setLayout(new BoxLayout(ami, BoxLayout.Y_AXIS));
+		ami.setAlignmentY(Component.TOP_ALIGNMENT);
+		JScrollPane amiScroll = new JScrollPane(ami);
+		people.add(amiScroll);
+		people.add(amiScroll);
 
 		/* Le reste de l'interface */
 		setTitle(pod.getOwner().getName());
 		setSize(500, 500);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+	}
+	
+	public void afficherAmi(String friendName){
+		ami.add(new JLabel(friendName));
+		panel.validate();
 	}
 	
 	public void afficherMessage(String line){
