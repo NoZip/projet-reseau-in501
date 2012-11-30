@@ -64,10 +64,17 @@ public class Interface extends JFrame {
 					String[] infoFriendTrie = infoFriend.split(":");
 					PodLocation friendLocation = new PodLocation(InetAddress.getByName(infoFriendTrie[0]),
 																 Integer.parseInt(infoFriendTrie[1]));
-					if(!pod.hasFriend(friendLocation) || pod.getLocation()){
-					pod.addPendingFriend(friendLocation);
+					PodLocation myLocation = new PodLocation(InetAddress.getLocalHost(),pod.getListeningPort());
+					if(pod.hasPendingFriend(friendLocation))
+						afficherErreur("Inivtation déjà envoyé (en attente de réponse).");
+					else if(pod.hasFriend(friendLocation))
+						afficherErreur("Ami déjà ajouté.");
+					else if(myLocation.equals(friendLocation))
+						afficherErreur("Vous ne pouvez pas vous ajoutez.");
+					else
+						pod.addPendingFriend(friendLocation);
 				}catch(Exception e){
-					JOptionPane.showMessageDialog(null, "Erreur ajout d'ami","Erreur",JOptionPane.ERROR_MESSAGE) ;
+					afficherErreur("Erreur ajout d'ami");
 					System.out.println("Erreur ajout d'ami");//l'ajout n'a pas été demandé de la bonne façon
 				}				
 			}
@@ -156,4 +163,7 @@ public class Interface extends JFrame {
 		JOptionPane.showMessageDialog(null, name + " " + (result ? "vous a" : "ne vous a pas") + " accepté");
 	}
 	
+	public void afficherErreur(String erreurMsg){
+		JOptionPane.showMessageDialog(null, erreurMsg,"Erreur",JOptionPane.ERROR_MESSAGE) ;
+	}
 }

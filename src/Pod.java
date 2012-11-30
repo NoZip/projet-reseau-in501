@@ -102,9 +102,19 @@ public class Pod {
 		while(it.hasNext()) {
 			User friend = it.next();
 			if(location.equals(friend.getLocation()))
-					return false;
+					return true;
 		}
-		return true;
+		return false;
+	}
+	
+	public boolean hasPendingFriend(PodLocation location){
+		Iterator<PodLocation> it = pendingFriends.iterator();		
+		while(it.hasNext()) {
+			PodLocation friend = it.next();
+			if(location.equals(friend))
+					return true;
+		}
+		return false;
 	}
 	
 	public User getFriend(UUID uuid){
