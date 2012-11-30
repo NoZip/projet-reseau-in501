@@ -15,7 +15,7 @@ public class User {
 	public boolean equals(Object o) {
 		if(o instanceof User){
 			User user = (User) o;
-			return this.location.equals(user.location) ;
+			return this.location.equals(user.location) && this.profile.getUUID().equals(user.getProfile().getUUID());
 		}
 		return false;
 	}

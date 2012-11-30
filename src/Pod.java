@@ -1,3 +1,4 @@
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Hashtable;
@@ -8,6 +9,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.nio.ByteBuffer;
 import java.io.*;
+import java.util.UUID;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,7 +17,7 @@ import org.json.JSONObject;
 public class Pod {
 
 	protected Map<String, Service> services;
-	protected List<User> friends;
+	protected Map<UUID,User> friends;
 	protected List<PodLocation> pendingFriends;
 	protected List<Message> messages;
 	protected int listeningPort;
@@ -26,7 +28,7 @@ public class Pod {
 
 	public Pod(String username, int port){
 		this.services = new Hashtable<String, Service>();
-		this.friends = new Vector<User>();
+		this.friends = new Hashtable<UUID,User>();
 		this.pendingFriends = new Vector<PodLocation>();
 		this.messages = new Vector<Message>();
 		this.listeningPort = port;
@@ -71,7 +73,8 @@ public class Pod {
 	 */
 	public List<User> getFriendList() {
 		List<User> res = new Vector<User>();
-		Iterator<User> it = friends.iterator();
+		Collection<User> destinataires = friends.values();
+		Iterator<User> it = destinataires.iterator();
 		while(it.hasNext())
 			res.add(it.next());
 		return res;
@@ -83,7 +86,18 @@ public class Pod {
 	 * @return true si l'ami est dans la liste, false sinon.
 	 */
 	public boolean hasFriend(User friend) {
-		return friends.contains(friend);
+		return friends.containsKey(friend.getProfile().getUUID());
+	}
+	
+	public boolean hasFriend(InetAddress addr, UUID uuid) {
+		if(friends.containsKey(uuid)){
+			return friends.get(uuid).getLocation().getAddress().equals(addr);
+		}
+		return false;
+	}
+	
+	public User getFriend(UUID uuid){
+		return friends.get(uuid);
 	}
 
 	/**
@@ -92,9 +106,9 @@ public class Pod {
 	*/
 	public void addFriend(User friend) {
 		// Permet d'éviter les doublons d'amis
-		if (!friends.contains(friend)) {
+		if (!hasFriend(friend)) {
 			synchronized(friends) {
-				friends.add(friend);
+				friends.put(friend.getProfile().getUUID(), friend);
 				System.out.println("Ami ajouté: " + friend.getName());
 			}
 		}
@@ -167,19 +181,28 @@ public class Pod {
 		}
 			
 		//On envoie le message à tous les amis
-		Iterator<User> it = friends.iterator();
-		while(it.hasNext()) {
-			User friend = it.next();
-			try {
+		Collection<User> destinataires = friends.values();
+		Iterator<User> it = destinataires.iterator();
+		
+		try{
+			
+			JSONObject json = new JSONObject();
+			json.put("message", message.toJSON());
+			json.put("uuid", this.getOwner().getUUID());
+			
+			while(it.hasNext()) {
+				User friend = it.next();
 				sendCommand(friend.getLocation().getAddress(),
 							friend.getLocation().getPort(),
-							"MSG",
-							message.toJSON());
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+							"MSG", json
+							);
 			}
+	
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
 	}
 	
 	public int getListeningPort(){
