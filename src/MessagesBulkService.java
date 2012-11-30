@@ -1,6 +1,5 @@
 import java.net.InetAddress;
 import java.text.ParseException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.Vector;
@@ -23,7 +22,7 @@ public class MessagesBulkService extends Service {
 			UUID clientUUID = UUID.fromString(arguments.getString("uuid"));
 			JSONArray jsonMessages = arguments.getJSONArray("messages");
 			
-			List<Message> messages = new Vector();			
+			List<Message> messages = new Vector<Message>();			
 			for (int i = 0; i < jsonMessages.length(); ++i) {
 				messages.add(Message.fromJSON(jsonMessages.getJSONObject(i)));
 			}
