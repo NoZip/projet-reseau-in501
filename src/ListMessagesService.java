@@ -1,13 +1,13 @@
 import java.util.List;
-import java.net.InetAddress;
+import java.util.UUID;
 import java.util.Iterator;
+import java.net.InetAddress;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject ;
 
 public class ListMessagesService extends Service {
-	
-	private static final String NOM_COMMANDE = "MSG";
 
 	public ListMessagesService(Pod pod) {
 		super(pod);
@@ -15,24 +15,37 @@ public class ListMessagesService extends Service {
 
 	/**
 	 * Retourne tous les messages du pod.
-	 * Il est possible avec l'option "since" de ne retrouver que les messages
-	 * postés depuis une certaine date.
-	 * @todo Prendre en compte l'option "since"
+	 * Options:
+	 *  - since : ne renvoie que les messages postés depuis une certaine date.
+	 *  - limit : limite le nombre de messages à envoyer.
+	 * @TODO Implémenter l'option since.
+	 * @TODO Implémenter l'option limit.
 	 */
 	@Override
-	public void execute(InetAddress addr, int port,JSONObject arguments) {
-		List<Message> messages = pod.getMessages();
-
-		Iterator<Message> i = messages.iterator();
-
-		while(i.hasNext()) {
-			try {
-				pod.sendCommand(addr,port,NOM_COMMANDE,i.next().toJSON());
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+	public void execute(InetAddress addr, int port, JSONObject arguments) {
+		try {
+			// Récupération des arguments
+			UUID clientUUID = UUID.fromString(arguments.getString("uuid"));
+			
+			if(pod.hasFriend(addr, clientUUID)) {
+				List<Message> messages = pod.getMessages();
+				
+				JSONObject json = new JSONObject();
+				JSONArray jsonMessages = new JSONArray();
+				
+				// On peuple le JSONArray avec les messages choisis
+				Iterator<Message> i = messages.iterator();
+				while(i.hasNext()) {
+					jsonMessages.put(i.next().toJSON());
+				}
+				
+				// Envoi de la commande MSGBULK
+				pod.sendCommand(addr, port, "MSGBULK", json);
 			}
-		}	
+		}
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
