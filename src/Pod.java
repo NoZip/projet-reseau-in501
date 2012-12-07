@@ -130,7 +130,7 @@ public class Pod {
 		if (!hasFriend(friend)) {
 			synchronized(friends) {
 				friends.put(friend.getProfile().getUUID(), friend);
-				this.myInterface.afficherAmi(friend);
+				this.myInterface.afficherAmi(friend.getProfile());
 				System.out.println("Ami ajouté: " + friend.getName());
 			}
 		}

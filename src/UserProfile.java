@@ -24,12 +24,16 @@ class UserProfile {
 	public String getName() {
 		return name;
 	}
+	
+	public String toString(){
+		return getName();
+	}
 
 	public boolean equals(Object o) {
 		if(o instanceof  UserProfile){
 			UserProfile other = (UserProfile) o;
 			return  this.uuid.equals(other.uuid)
-					&& this.name == other.name;
+					&& this.name.equals(other.name);
 		}
 		
 		return false;

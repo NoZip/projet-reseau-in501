@@ -16,6 +16,8 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
+import org.json.JSONException;
+
 import java.net.InetAddress;
 import java.util.Date;
 
@@ -30,7 +32,7 @@ public class Interface extends JFrame {
 	
 	static JPanel panel, me, them, ami;
 	static JTextField postText, addFriend;
-	static JComboBox<User> amiListe;
+	static JComboBox<UserProfile> amiListe;
 	
 	public Interface(Pod pod) {
 		this.pod = pod;
@@ -39,7 +41,7 @@ public class Interface extends JFrame {
 	
 	public final void initUI() {
 		
-		amiListe = new JComboBox<User>();
+		amiListe = new JComboBox<UserProfile>();
 
 		panel = new JPanel();
 		getContentPane().add(panel);
@@ -148,9 +150,19 @@ public class Interface extends JFrame {
 		
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				User oldFriend = (User) amiListe.getSelectedItem();
-				pod.removeFriend(oldFriend.getProfile().getUUID());
-				amiListe.removeItem(oldFriend);
+				try {
+					UserProfile oldFriend = (UserProfile) amiListe.getSelectedItem();
+					pod.sendCommand(pod.getFriend(oldFriend.getUUID()).getLocation().getAddress(), 
+							pod.getFriend(oldFriend.getUUID()).getLocation().getPort(), 
+							"DEL", 
+							pod.getOwner().toJSON());
+					pod.removeFriend(oldFriend.getUUID());
+					amiListe.removeItem(oldFriend);
+					afficherSuppression(oldFriend.getName(), false);
+				} catch (JSONException e) {
+					System.out.println("La suppresion a échoué.");
+					e.printStackTrace();
+				}
 			}
 		});
 		ami.add(deleteButton);
@@ -165,7 +177,7 @@ public class Interface extends JFrame {
 		
 	}
 	
-	public void afficherAmi(User newFriend){
+	public void afficherAmi(UserProfile newFriend){
 		amiListe.addItem(newFriend);
 		panel.validate();
 	}
@@ -173,6 +185,13 @@ public class Interface extends JFrame {
 	public void afficherMessage(String line){
 		System.out.println("Message = "+ line);
 		them.add(new JLabel(line));
+		panel.validate();
+	}
+	
+	public static void supprimerAmi(UserProfile oldFriend){
+		amiListe.removeItem(oldFriend);
+		amiListe.validate();
+		ami.validate();
 		panel.validate();
 	}
 	
@@ -184,6 +203,10 @@ public class Interface extends JFrame {
 	
 	public static void resultatInvitation(String name, Boolean result){
 		JOptionPane.showMessageDialog(null, name + " " + (result ? "vous a" : "ne vous a pas") + " accepté");
+	}
+	
+	public static void afficherSuppression(String name, Boolean result){
+		JOptionPane.showMessageDialog(null, name + " " + (result ? "vous a" : "a bien été") + " supprimé.");
 	}
 	
 	public void afficherErreur(String erreurMsg){
