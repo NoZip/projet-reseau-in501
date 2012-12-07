@@ -43,4 +43,8 @@ public class User {
 	public static User fromJSON(JSONObject json) throws JSONException{
 		return new User((UserProfile) json.get("profile"), (PodLocation) json.get("location"));
 	}
+	
+	public String toString(){
+		return getName();
+	}
 }

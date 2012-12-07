@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -29,6 +30,7 @@ public class Interface extends JFrame {
 	
 	static JPanel panel, me, them, ami;
 	static JTextField postText, addFriend;
+	static JComboBox<User> amiListe;
 	
 	public Interface(Pod pod) {
 		this.pod = pod;
@@ -36,6 +38,8 @@ public class Interface extends JFrame {
 	}
 	
 	public final void initUI() {
+		
+		amiListe = new JComboBox<User>();
 
 		panel = new JPanel();
 		getContentPane().add(panel);
@@ -127,7 +131,6 @@ public class Interface extends JFrame {
 		them.setAlignmentY(Component.TOP_ALIGNMENT);
 		JScrollPane themScroll = new JScrollPane(them);
 		people.add(themScroll);
-		people.add(themScroll);
 		them.add(new JLabel("Les posts de mes amis :"));
 		panel.validate();
 
@@ -138,8 +141,20 @@ public class Interface extends JFrame {
 		ami.setAlignmentY(Component.TOP_ALIGNMENT);
 		JScrollPane amiScroll = new JScrollPane(ami);
 		people.add(amiScroll);
-		people.add(amiScroll);
 		ami.add(new JLabel("Mes amis :"));
+		ami.add(amiListe);
+		
+		JButton deleteButton = new JButton("Supprimer");
+		
+		deleteButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				User oldFriend = (User) amiListe.getSelectedItem();
+				pod.removeFriend(oldFriend.getProfile().getUUID());
+				amiListe.removeItem(oldFriend);
+			}
+		});
+		ami.add(deleteButton);
+		
 		panel.validate();
 
 		/* Le reste de l'interface */
@@ -150,8 +165,8 @@ public class Interface extends JFrame {
 		
 	}
 	
-	public void afficherAmi(String friendName){
-		ami.add(new JLabel(friendName));
+	public void afficherAmi(User newFriend){
+		amiListe.addItem(newFriend);
 		panel.validate();
 	}
 	

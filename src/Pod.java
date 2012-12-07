@@ -130,7 +130,7 @@ public class Pod {
 		if (!hasFriend(friend)) {
 			synchronized(friends) {
 				friends.put(friend.getProfile().getUUID(), friend);
-				this.myInterface.afficherAmi(friend.getName());
+				this.myInterface.afficherAmi(friend);
 				System.out.println("Ami ajouté: " + friend.getName());
 			}
 		}
@@ -143,6 +143,12 @@ public class Pod {
 	public void removeFriend(int index) {
 		synchronized(services) {
 			friends.remove(index);
+		}
+	}
+	
+	public void removeFriend(UUID uid) {
+		synchronized(services) {
+			friends.remove(uid);
 		}
 	}
 	
