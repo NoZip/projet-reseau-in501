@@ -9,7 +9,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -18,6 +20,7 @@ import javax.swing.JLabel;
 
 import org.json.JSONException;
 
+import java.io.File;
 import java.net.InetAddress;
 import java.util.Date;
 
@@ -62,6 +65,7 @@ public class Interface extends JFrame {
 		postText.setMaximumSize(new Dimension(Integer.MAX_VALUE, postText.getMinimumSize().height));
 		panel.add(postText);
 		JButton postButton = new JButton("Post");
+		JButton postImageButton = new JButton("Post an image.");
 		
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
@@ -100,11 +104,35 @@ public class Interface extends JFrame {
 				panel.validate();
 			}
 		});
+		
+		postImageButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				
+				JFileChooser choix = new JFileChooser();
+				int retour=choix.showOpenDialog(panel);
+				
+				if(retour==JFileChooser.APPROVE_OPTION){
+					try {			   
+					   JLabel imagePanel = new JLabel();
+					   ImageIcon image = new ImageIcon(choix.getSelectedFile().getAbsolutePath());
+					   imagePanel.setText(null); 
+					   imagePanel.setIcon(image);
+					   me.add(imagePanel);
+					   panel.validate();
+					   pod.addImage((new File(choix.getSelectedFile().getAbsolutePath())).toURI().toURL());
+					}catch(Exception e){
+						e.printStackTrace();
+					}
+				}
+			}
+		});
 
 		
 
 		postButton.setAlignmentX(Component.LEFT_ALIGNMENT);
 		panel.add(postButton);
+		postButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+		panel.add(postImageButton);
 
 		/* Un panel horizontal pour les gens */
 		JPanel people = new JPanel();
@@ -211,5 +239,13 @@ public class Interface extends JFrame {
 	
 	public void afficherErreur(String erreurMsg){
 		JOptionPane.showMessageDialog(null, erreurMsg,"Erreur",JOptionPane.ERROR_MESSAGE) ;
+	}
+	
+	public void afficherImage(ImageIcon image){
+		JLabel imagePanel = new JLabel();
+		imagePanel.setText(null); 
+		imagePanel.setIcon(image);
+		them.add(imagePanel);
+		panel.validate();
 	}
 }

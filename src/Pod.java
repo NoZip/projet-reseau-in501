@@ -7,6 +7,7 @@ import java.util.Vector;
 import java.net.Socket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.io.*;
 import java.util.UUID;
@@ -223,6 +224,33 @@ public class Pod {
 				sendCommand(friend.getLocation().getAddress(),
 							friend.getLocation().getPort(),
 							"MSG", json
+							);
+			}
+	
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void addImage(URL image) {
+			
+		//On envoie le message à tous les amis
+		Collection<User> destinataires = friends.values();
+		Iterator<User> it = destinataires.iterator();
+		
+		try{
+			
+			JSONObject json = new JSONObject();
+			json.put("image", image);
+			json.put("uuid", this.getOwner().getUUID());
+			
+			while(it.hasNext()) {
+				User friend = it.next();
+				sendCommand(friend.getLocation().getAddress(),
+							friend.getLocation().getPort(),
+							"IMG", json
 							);
 			}
 	
