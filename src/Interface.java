@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -18,11 +20,16 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.net.InetAddress;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 public class Interface extends JFrame {
 
@@ -248,4 +255,52 @@ public class Interface extends JFrame {
 		them.add(imagePanel);
 		panel.validate();
 	}
+
+	public void close(){
+		try {
+			
+			List<User> f = pod.getFriendList();
+			JSONArray t = new JSONArray();
+			for(int i = 0 ; i < f.size() ; i++)
+				t.put(i, f.get(i).getLocation());
+	
+			// Create file 
+			FileWriter fstream = new FileWriter(pod.getOwner().getName() + ".ami.social ");
+			BufferedWriter out = new BufferedWriter(fstream);
+			out.write(t.toString());
+			//Close the output stream
+			out.close();
+	
+			
+			Iterator<User> i = f.iterator();
+			while(i.hasNext()) {
+				User tmp = i.next();
+				pod.sendCommand(tmp.getLocation().getAddress(), 
+								tmp.getLocation().getPort(), 
+								"DEL", 
+								pod.getOwner().toJSON());
+			}
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e){//Catch exception if any
+			 System.err.println("Error: " + e.getMessage());
+		}
+	}
+	
+}
+
+class CloseWindow extends WindowAdapter {
+	
+	protected Interface in;
+	
+	public CloseWindow(Interface i){
+		in = i;
+	}
+	
+	public void windowClosing(WindowEvent e) {
+		in.close();
+	}
+	
 }
