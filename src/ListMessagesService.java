@@ -28,9 +28,12 @@ public class ListMessagesService extends Service {
 			UUID clientUUID = UUID.fromString(arguments.getString("uuid"));
 			
 			if(pod.hasFriend(addr, clientUUID)) {
+				User client = pod.getFriend(clientUUID);
+				
 				List<Message> messages = pod.getMessages();
 				
 				JSONObject json = new JSONObject();
+				json.put("uuid", pod.getOwner().getUUID());
 				JSONArray jsonMessages = new JSONArray();
 				
 				// On peuple le JSONArray avec les messages choisis
@@ -39,8 +42,13 @@ public class ListMessagesService extends Service {
 					jsonMessages.put(i.next().toJSON());
 				}
 				
+				json.put("messages", jsonMessages);
+				
 				// Envoi de la commande MSGBULK
-				pod.sendCommand(addr, port, "MSGBULK", json);
+				pod.sendCommand(client.getLocation().getAddress(),
+						        client.getLocation().getPort(),
+						        "MSGBULK",
+						        json);
 			}
 		}
 		catch (JSONException e) {

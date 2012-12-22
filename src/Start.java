@@ -15,6 +15,8 @@ public class Start {
 		pod.addService("USER", new UserService(pod));
 		pod.addService("DEL", new DeleteService(pod));
 		pod.addService("IMG", new ImageService(pod));
+		pod.addService("LISTMSG", new ListMessagesService(pod));
+		pod.addService("MSGBULK", new MessagesBulkService(pod));
 		ServerThread thread = new ServerThread(pod);
 		thread.start();
 		Interface mine = pod.getInterface();
