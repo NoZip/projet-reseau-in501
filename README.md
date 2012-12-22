@@ -1,10 +1,6 @@
 IN501 : Projet Reseau
 =====================
 
-Architecture de base
---------------------
+Pour lancer un serveur, lancez le script start.sh et répondez aux questions.
 
-Pod et client
-Amis
-Status (avec un champ réponse à)
-
+	bash start.sh
