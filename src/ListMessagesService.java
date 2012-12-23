@@ -7,21 +7,25 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject ;
 
+/**
+ * Classe gérant le service ADD.
+ */
 public class ListMessagesService extends Service {
 
+	/**
+	* Création d'une instance de ListMessagesService.
+	* @param pod Pod auquel est lié le service.
+	*/
 	public ListMessagesService(Pod pod) {
 		super(pod);
 	}
 
 	/**
 	 * Retourne tous les messages du pod.
-	 * Options:
-	 *  - since : ne renvoie que les messages postés depuis une certaine date.
-	 *  - limit : limite le nombre de messages à envoyer.
-	 * @TODO Implémenter l'option since.
-	 * @TODO Implémenter l'option limit.
+	 * @param addr InetAddress de l'expéditeur.
+	 * @param port Port de l'expéditeur.
+	 * @param arguments Arguments de la commande.
 	 */
-	@Override
 	public void execute(InetAddress addr, int port, JSONObject arguments) {
 		try {
 			// Récupération des arguments

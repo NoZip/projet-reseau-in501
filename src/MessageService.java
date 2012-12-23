@@ -6,34 +6,36 @@ import java.util.UUID;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
+/**
+ * Classe gérant le service Message.
+ */
 public class MessageService extends Service {
 
+	/**
+	* Création d'une instance de MessageService.
+	* @param pod Pod auquel est lié le service.
+	*/
 	public MessageService(Pod pod) {
 		super(pod);
 	}
 
 	/**
-	 * Retourne tous les messages du pod.
-	 * Il est possible avec l'option "since" de ne retrouver que les messages
-	 * postés depuis une certaine date.
-	 * @TODO Prendre en compte l'option "since"
+	 * Traitement de la commande Message.
+	 * @param addr InetAddress de l'expéditeur.
+	 * @param port Port de l'expéditeur.
+	 * @param arguments Arguments de la commande.
 	 */
-	@Override
 	public void execute(InetAddress addr, int port, JSONObject arguments) {
-		System.out.println("Message reçu");
 		try{
-			UUID uuid = UUID.fromString(arguments.getString("uuid"));
-			Message myMsg = Message.fromJSON(arguments.getJSONObject("message"));
-			if(pod.hasFriend(addr,uuid)){
+			UUID uuid = UUID.fromString(arguments.getString("uuid")); //on récupère l'uuid de l'expéditeur
+			Message myMsg = Message.fromJSON(arguments.getJSONObject("message")); //on récupère le message
+			if(pod.hasFriend(addr,uuid)){ //si l'expéditeur est un ami
 				User friend = pod.getFriend(uuid);
-				pod.getInterface().afficherMessage(friend.getName() + " dit : "+ myMsg.getContent());
+				pod.getInterface().afficherMessage(friend.getName() + " dit : "+ myMsg.getContent()); //on affiche le message
 			}
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

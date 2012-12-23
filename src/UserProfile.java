@@ -3,32 +3,61 @@ import java.util.UUID;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Classe définissant l'identité d'un utilisateur.
+ */
 class UserProfile {
 
 	protected UUID uuid;
 	protected String name;
 
+	/**
+	 * Création d'un UserProfile
+	 * @param uuid Identifiant unique pour le UserProfile.
+	 * @param name Nom pour le UserProfile.
+	 */
 	public UserProfile(UUID uuid, String name) {
 		this.uuid = uuid;
 		this.name = name;
 	}
 	
+	/**
+	 * Création d'un UserProfile
+	 * @param name Nom pour le UserProfile.
+	 */
 	public UserProfile(String name) {
 		this(UUID.randomUUID(), name);
 	}
 
+	/**
+	 * Permet de récupérer l'uuid d'un UserProfle.
+	 * @return Un uuid.
+	 */
 	public UUID getUUID() {
 		return uuid;
 	}
 	
+	/**
+	 * Permet de récupérer le nom associé à un UserProfile.
+	 * @return Une chaîne de charactère définissant un nom d'utilisateur.
+	 */
 	public String getName() {
 		return name;
 	}
 	
+	/**
+	 * Renvoie une chaîne de charactère définissant un UserProfile.
+	 * @return Une chaîne de charactère définissant un UserProfile.
+	 */
 	public String toString(){
 		return getName();
 	}
 
+	/**
+	 * Test d'égalité.
+	 * @param o Objet à tester.
+	 * @return true s'ils sont égaux, false sinon.
+	 */
 	public boolean equals(Object o) {
 		if(o instanceof  UserProfile){
 			UserProfile other = (UserProfile) o;

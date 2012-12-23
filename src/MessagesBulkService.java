@@ -8,14 +8,25 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
+/**
+ * Classe gérant le service MessagesBulk.
+ */
 public class MessagesBulkService extends Service {
 
+	/**
+	* Création d'une instance de MessagesBulk.
+	* @param pod Pod auquel est lié le service.
+	*/
 	public MessagesBulkService(Pod pod) {
 		super(pod);
 	}
 
-	@Override
+	/**
+	* Traitement de la commande MessagesBulk.
+	* @param addr InetAddress de l'expéditeur.
+	* @param port Port de l'expéditeur.
+	* @param arguments Arguments de la commande.
+	*/
 	public void execute(InetAddress addr, int port, JSONObject arguments) {
 		try {
 			// Récupération des arguments

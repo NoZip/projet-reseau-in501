@@ -15,6 +15,9 @@ import java.util.UUID;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Classe gérant les connexions. S'occuppe des intéractions entre les utilisateurs et avec l'interface.
+ */
 public class Pod {
 
 	protected Map<String, Service> services;
@@ -27,6 +30,11 @@ public class Pod {
 	
 	protected Interface myInterface;
 
+	/**
+	 * Création d'un pod.
+	 * @param username Nom de l'utilisateur.
+	 * @param port Numero du port utilisé.
+	 */
 	public Pod(String username, int port){
 		this.services = new Hashtable<String, Service>();
 		this.friends = new Hashtable<UUID,User>();
@@ -70,7 +78,7 @@ public class Pod {
 	}
 
 	/**
-	 * permet de récupérer le liste d'amis du pod.
+	 * permet de récupérer la liste d'amis du pod.
 	 */
 	public List<User> getFriendList() {
 		List<User> res = new Vector<User>();
@@ -90,6 +98,12 @@ public class Pod {
 		return friends.containsKey(friend.getProfile().getUUID());
 	}
 	
+	/**
+	 * Vérifie si un ami existe dns la liste d'amis du pod.
+	 * @param addr InetAddress de l'ami à tester.
+	 * @param uuid uuid de l'ami à tester.
+	 * @return true si l'ami est dans la liste, false sinon.
+	 */
 	public boolean hasFriend(InetAddress addr, UUID uuid) {
 		if(friends.containsKey(uuid)){
 			return friends.get(uuid).getLocation().getAddress().equals(addr);
@@ -97,6 +111,11 @@ public class Pod {
 		return false;
 	}
 	
+	/**
+	 * Vérifie si un ami existe dns la liste d'amis du pod.
+	 * @param location PodLocation de l'ami à tester.
+	 * @return true si l'ami est dans la liste, false sinon.
+	 */
 	public boolean hasFriend(PodLocation location){
 		Collection<User> destinataires = friends.values();
 		Iterator<User> it = destinataires.iterator();		
@@ -108,6 +127,11 @@ public class Pod {
 		return false;
 	}
 	
+	/**
+	 * Teste si quelqu'un est dans la liste des amis en attente.
+	 * @param location PodLocation de l'ami en attente à tester.
+	 * @return true si l'ami est dans la liste, false sinon.
+	 */
 	public boolean hasPendingFriend(PodLocation location){
 		Iterator<PodLocation> it = pendingFriends.iterator();		
 		while(it.hasNext()) {
@@ -118,6 +142,11 @@ public class Pod {
 		return false;
 	}
 	
+	/**
+	 * Retourne un ami de la liste d'ami.
+	 * @param uuid uuid de l'ami à récupérer.
+	 * @return L'ami correspondant à l'uuid;
+	 */
 	public User getFriend(UUID uuid){
 		return friends.get(uuid);
 	}
@@ -132,7 +161,6 @@ public class Pod {
 			synchronized(friends) {
 				friends.put(friend.getProfile().getUUID(), friend);
 				this.myInterface.afficherAmi(friend.getProfile());
-				System.out.println("Ami ajouté: " + friend.getName());
 			}
 		}
 	}
@@ -147,16 +175,28 @@ public class Pod {
 		}
 	}
 	
+	/**
+	* Supprime un ami.
+	* @param uid UUID de l'ami à supprimer dans la liste d'amis.
+	*/
 	public void removeFriend(UUID uid) {
 		synchronized(services) {
 			friends.remove(uid);
 		}
 	}
 	
+	/**
+	 * Retourne la liste des amis en attente.
+	 * @return Liste d'amis en attente.
+	 */
 	public List<PodLocation> getPendingFriends() {
 		return pendingFriends;
 	}
 	
+	/**
+	 * Rajoute quelqu'un à la liste des amis en attente.
+	 * @param friendLocation PodLocation de l'ami à rajouté.
+	 */
 	public void addPendingFriend(PodLocation friendLocation) {
 		if (!pendingFriends.contains(friendLocation)) {
 			
@@ -165,9 +205,7 @@ public class Pod {
 				pendingFriends.add(friendLocation);
 			}
 			
-			System.out.println(friendLocation.toString());
-			
-			// On envoir une commande ADD au Pod avec lequel on veut se lier
+			// On envoie une commande ADD au Pod avec lequel on veut se lier
 			JSONObject json = new JSONObject();
 			
 			try {
@@ -202,8 +240,6 @@ public class Pod {
 	* @param message le message à ajouter.
 	*/
 	public void addMessage(Message message) {
-		System.out.println(message.getContent());
-		
 		// On ajoute le message au pod
 		synchronized(messages) {
 			messages.add(message);
@@ -234,9 +270,13 @@ public class Pod {
 		
 	}
 	
+	/**
+	 * Envoie une image à tous les amis
+	 * @param image Image à envoyer
+	 */
 	public void addImage(URL image) {
 			
-		//On envoie le message à tous les amis
+		//On envoie l'image à tous les amis
 		Collection<User> destinataires = friends.values();
 		Iterator<User> it = destinataires.iterator();
 		
@@ -261,17 +301,26 @@ public class Pod {
 		
 	}
 	
+	/**
+	 * Récupère le port d'écoute du pod.
+	 * @return Numéro de port.
+	 */
 	public int getListeningPort(){
 		return listeningPort;
 	}
 
 	/**
 	 * permet de récupérer le profil de l'utilisateur du pod.
+	 * @return UserProfile lié au pod.
 	 */
 	public UserProfile getOwner() {
 		return owner;
 	}
 	
+	/**
+	 * Récupère l'interface lié au pod.
+	 * @return L'interface lié au pod.
+	 */
 	public Interface getInterface(){
 		return myInterface;
 	}
@@ -293,7 +342,7 @@ public class Pod {
 				handler.start();
 			}
 		} catch(Exception e){
-			;//tant pis
+			e.printStackTrace();
 		}
 	}
 
@@ -302,7 +351,6 @@ public class Pod {
 	 * @param client Le socket du pod qui a envoyé la commande.
 	 */
 	public void handleRequest(Socket client) {
-		System.out.println("Je reçois une commande");
 		// Le traitement se déroule en trois phases:
 		// 1: lectures des données dans le socket.
 		// 2: séparation de la commande et des arguments.
@@ -310,8 +358,6 @@ public class Pod {
 		try {
 			InetAddress addr = client.getInetAddress();
 			int port = client.getPort();
-			PodLocation clientLocation = new PodLocation(addr, port);
-			System.out.println(clientLocation.toString());
 			
 			// Phase 1:
 			ByteBuffer buffer = ByteBuffer.allocate(256);
@@ -335,14 +381,14 @@ public class Pod {
 			runCommand(tmp[0], addr, port, new JSONObject(tmp[1]));
 		}catch(Exception e){
 			e.printStackTrace();
-			System.out.println("il y a eu un problème");
 		}
 	}
 
 	/**
 	 * Route la commande vers le service adéquat.
 	 * @param command La commande à lancer.
-	 * @param client Le socket corresondant au pod qui a envoyé la commande.
+	 * @param addr InetAddress correspondant à l'expéditeur. 
+	 * @param port Numero de port utilisé par l'expéditeur.
 	 * @param arguments Les arguments de la commande.
 	 */
 	public void runCommand(String command, InetAddress addr, int port, JSONObject arguments) {
@@ -351,16 +397,12 @@ public class Pod {
 
 	/**
 	* Envoie une commande à un autre Pod
-	* @param url L'adresse du pod auquel envoyer la commande.
+	* @param addr InetAddress du pod auquel envoyer la commande.
+	* @param port Numero du port auquel envoyer la commande.
 	* @param command La commande à envoyer.
 	* @param arguments Les arguments de la commande.
 	*/
 	public void sendCommand(InetAddress addr, int port, String command, JSONObject arguments) {
-		System.out.println("Envoi d'une commande");
-		System.out.println(addr.toString() + ':' + port);
-		System.out.println("Commande: " + command);
-		System.out.println("Arguments: " + arguments.toString());
-		
 		try {
 			Socket sock = new Socket(addr, port); //on cree la socket d'ecriture
 			OutputStream os = sock.getOutputStream(); //on cree le stream

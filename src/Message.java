@@ -5,22 +5,38 @@ import java.text.SimpleDateFormat;
 import org.json.JSONException;
 import org.json.JSONObject ;
 
+/**
+ * Objet définissant les messages.
+ */
 public class Message {
 
 	static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 	
-	protected String content;
-	protected Date date;
+	protected String content; //contenu du message
+	protected Date date; //date du message
 
+	/**
+	 * Création d'une instance de Message.
+	 * @param content Contenu du message.
+	 * @param date Date du message.
+	 */
 	public Message(String content, Date date) {
 		this.content = content;
 		this.date = date;
 	}
 
+	/**
+	 * Récupérer le contenu du message.
+	 * @return Le contenu du message.
+	 */
 	public String getContent() {
 		return content;
 	}
 
+	/**
+	 * Récupérer la date du message.
+	 * @return La date du message.
+	 */
 	public Date getDate() {
 		return date;
 	}
