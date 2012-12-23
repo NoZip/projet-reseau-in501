@@ -37,7 +37,7 @@ public class Start {
 		mine.setVisible(true);
 
 		//On récupère la liste d'ami stocker dans un fichier.
-		File f = new File(pod.getOwner().getName() + ".ami.social "); //on récupère le fichier
+		File f = new File(pod.getOwner().getName() + ".ami.social"); //on récupère le fichier
 		if(f.isFile()){ //s'il existe
 			try {
 				//on récupère son contenu
@@ -64,6 +64,31 @@ public class Start {
 			}
 		}
 		
+		//On récupère la liste de messages stockés dans un fichier.
+		File m = new File(pod.getOwner().getName() + ".messages.social"); //on récupère le fichier
+		if(f.isFile()){ //s'il existe
+			try {
+				//on récupère son contenu
+				FileInputStream msgFileReader= new FileInputStream(m);
+				byte[] tmp = new byte[msgFileReader.available()];
+				msgFileReader.read(tmp);
+				msgFileReader.close();
+						
+				JSONArray myMsg = new JSONArray( new String(tmp) );
+						
+				//on récupère les messages
+				for(int i = 0; i < myMsg.length() ; i++) {
+					JSONObject json = new JSONObject( myMsg.get(i).toString() ) ;
+					pod.addMessage( Message.fromJSON(json) );
+				}
+						
+			} catch (FileNotFoundException e) {
+				;//si le fichier n'existe pas, on ne fait rien
+			} catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+
 		//On renvoie une requête aux personnes présentes dans la liste des pendingFriends à intervalle régulier.
 		Timer timer = new Timer();
         timer.schedule (new TimerTask() {

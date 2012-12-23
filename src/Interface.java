@@ -347,6 +347,20 @@ public class Interface extends JFrame {
 			BufferedWriter out = new BufferedWriter(fstream);
 			out.write(t.toString());
 			out.close();
+			
+			//On sauvegarde les messages
+			List<Message> svgMsg = pod.getMessages();//on les récupère
+			
+			//on la stocke dans un JSONArray
+			JSONArray tMsg = new JSONArray();
+			for(int i = 0 ; i < svgMsg.size() ; i++)
+				tMsg.put(i, svgMsg.get(i).toJSON());
+			
+			// On crée le fichier 
+			FileWriter msgStream = new FileWriter(pod.getOwner().getName() + ".messages.social ");
+			BufferedWriter outMsg = new BufferedWriter(msgStream);
+			outMsg.write(tMsg.toString());
+			outMsg.close();
 	
 			//On indique la déconnexion à tous nos amis.
 			Iterator<User> i = f.iterator();

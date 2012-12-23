@@ -373,8 +373,6 @@ public class Pod {
 			// Phase 2:
 			String[] tmp = new String[2];
 			tmp = inputData.split(" ", 2);
-			System.out.println("Commande: " + tmp[0]);
-			System.out.println("Arguments: " + tmp[1]);
 
 			// Phase 3:
 			// On lance la commande avec les arguments
