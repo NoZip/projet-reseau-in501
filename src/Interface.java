@@ -25,6 +25,7 @@ import org.json.JSONException;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.net.InetAddress;
 import java.util.Date;
@@ -314,6 +315,32 @@ public class Interface extends JFrame {
 			JSONArray t = new JSONArray();
 			for(int i = 0 ; i < f.size() ; i++)
 				t.put(i, f.get(i).getLocation());
+			
+			//On récupère les amis qui était dans l'ancien fichier stocker la liste d'ami mais qui n'ont pas répondu.
+			File oldFile = new File(pod.getOwner().getName() + ".ami.social "); //on récupère le fichier
+			if(oldFile.isFile()){ //s'il existe
+				try {
+					//on récupère son contenu
+					FileInputStream fileReader= new FileInputStream(oldFile);
+					byte[] tmp = new byte[fileReader.available()];
+					fileReader.read(tmp);
+					fileReader.close();
+					
+					JSONArray oldFriend = new JSONArray( new String(tmp) );
+					
+					for(int i = 0 ; i < oldFriend.length() ; i++) {
+						String[] infoFriendTrie = ((String) oldFriend.get(i)).split(":");
+						infoFriendTrie[0] = (infoFriendTrie[0].split("/"))[1];
+						PodLocation friendLocation = new PodLocation(InetAddress.getByName(infoFriendTrie[0]),
+																 	Integer.parseInt(infoFriendTrie[1]));
+						if(pod.hasPendingFriend(friendLocation))
+							t.put(t.length()+1, friendLocation);	
+					}
+					
+				}catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
 	
 			// On crée le fichier 
 			FileWriter fstream = new FileWriter(pod.getOwner().getName() + ".ami.social ");
